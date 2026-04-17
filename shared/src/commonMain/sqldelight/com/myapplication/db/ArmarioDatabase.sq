@@ -1,0 +1,37 @@
+CREATE TABLE Prenda (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    imagePath TEXT NOT NULL,
+    category TEXT NOT NULL,
+    color TEXT,
+    season TEXT,
+    createdAt INTEGER NOT NULL
+);
+
+insertPrenda:
+INSERT INTO Prenda(imagePath, category, color, season, createdAt)
+VALUES (?, ?, ?, ?, ?);
+
+selectAllPrendas:
+SELECT * FROM Prenda ORDER BY createdAt DESC;
+
+deletePrenda:
+DELETE FROM Prenda WHERE id = ?;
+
+CREATE TABLE Outfit (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    createdAt INTEGER NOT NULL
+);
+
+CREATE TABLE OutfitPrenda (
+    outfitId INTEGER NOT NULL,
+    prendaId INTEGER NOT NULL,
+    positionX REAL NOT NULL,
+    positionY REAL NOT NULL,
+    scale REAL NOT NULL,
+    rotation REAL NOT NULL,
+    zIndex INTEGER NOT NULL,
+    FOREIGN KEY(outfitId) REFERENCES Outfit(id) ON DELETE CASCADE,
+    FOREIGN KEY(prendaId) REFERENCES Prenda(id) ON DELETE CASCADE,
+    PRIMARY KEY(outfitId, prendaId)
+);
