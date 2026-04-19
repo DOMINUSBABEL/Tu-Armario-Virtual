@@ -20,6 +20,7 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     var showImagePicker by remember { mutableStateOf(false) }
     var selectedImageBytes by remember { mutableStateOf<ByteArray?>(null) }
+    var occasion by remember { mutableStateOf("") }
     var aiSuggestion by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -54,12 +55,25 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
                 Text("Image selected successfully.")
                 Spacer(modifier = Modifier.height(16.dp))
 
+                OutlinedTextField(
+                    value = occasion,
+                    onValueChange = { occasion = it },
+                    label = { Text("Describe the Occasion (Optional)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colors.primary,
+                        unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                    )
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
                     onClick = {
                         isLoading = true
                         aiSuggestion = ""
                         coroutineScope.launch {
-                            val response = ollamaClient.getOutfitSuggestion(selectedImageBytes!!)
+                            val response = ollamaClient.getOutfitSuggestion(selectedImageBytes!!, occasion)
                             aiSuggestion = response
                             isLoading = false
                             GameState.addAction("Outfit Generated", 50)
