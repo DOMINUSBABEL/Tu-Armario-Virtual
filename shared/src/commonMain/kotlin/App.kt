@@ -8,6 +8,7 @@ import com.myapplication.common.navigation.AppScreen
 import com.myapplication.common.ui.LoginScreen
 import com.myapplication.common.ui.TutorialScreen
 import com.myapplication.common.ui.MainScreen
+import com.myapplication.common.ui.LeaderboardScreen
 
 @Composable
 fun App() {
@@ -17,7 +18,8 @@ fun App() {
         when (currentScreen) {
             is AppScreen.Login -> LoginScreen(onNavigateToTutorial = { currentScreen = AppScreen.Tutorial })
             is AppScreen.Tutorial -> TutorialScreen(onNavigateToMain = { currentScreen = AppScreen.Main })
-            is AppScreen.Main -> MainScreen()
+            is AppScreen.Main -> MainScreen(onNavigateToLeaderboard = { currentScreen = AppScreen.Leaderboard })
+            is AppScreen.Leaderboard -> LeaderboardScreen(onNavigateBack = { currentScreen = AppScreen.Main })
         }
     }
 }

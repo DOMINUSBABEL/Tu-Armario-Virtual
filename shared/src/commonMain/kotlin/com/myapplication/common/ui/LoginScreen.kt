@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.myapplication.common.gamification.GameState
 
 @Composable
 fun LoginScreen(onNavigateToTutorial: () -> Unit) {
@@ -19,6 +20,12 @@ fun LoginScreen(onNavigateToTutorial: () -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "AI Outfit Recommender", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Welcome back! Login to earn 10 Style Points.",
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.secondary
+        )
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
@@ -39,7 +46,10 @@ fun LoginScreen(onNavigateToTutorial: () -> Unit) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = onNavigateToTutorial,
+            onClick = {
+                GameState.addAction("Login Welcome Bonus", 10)
+                onNavigateToTutorial()
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
@@ -47,7 +57,10 @@ fun LoginScreen(onNavigateToTutorial: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedButton(
-            onClick = onNavigateToTutorial,
+            onClick = {
+                GameState.addAction("Login Welcome Bonus", 10)
+                onNavigateToTutorial()
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login with Google")

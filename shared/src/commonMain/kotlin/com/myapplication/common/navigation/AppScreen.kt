@@ -4,4 +4,5 @@ sealed class AppScreen {
     object Login : AppScreen()
     object Tutorial : AppScreen()
     object Main : AppScreen()
+    object Leaderboard : AppScreen()
 }
