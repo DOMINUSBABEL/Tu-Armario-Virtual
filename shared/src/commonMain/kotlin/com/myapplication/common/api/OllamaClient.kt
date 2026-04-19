@@ -34,17 +34,18 @@ class OllamaClient {
     }
 
     @OptIn(ExperimentalEncodingApi::class)
-    suspend fun getOutfitSuggestion(imageBytes: ByteArray, occasion: String = "", model: String = "llava"): String {
+    suspend fun getOutfitSuggestion(imageBytesList: List<ByteArray>, theme: String = "", itemDescriptions: List<String> = emptyList(), model: String = "llava"): String {
         return try {
-            val base64Image = Base64.encode(imageBytes)
+            val base64Images = imageBytesList.map { Base64.encode(it) }
 
-            val occasionText = if (occasion.isNotBlank()) " for the occasion: $occasion" else ""
-            val promptText = "You are an expert fashion stylist. Analyze the clothing items in the provided image. Suggest 2 complete outfit combinations using these items$occasionText, detailing why they work well together based on color, style, and occasion. Respond in Spanish."
+            val themeText = if (theme.isNotBlank()) " for the theme/occasion: $theme" else ""
+            val itemsText = if (itemDescriptions.isNotEmpty()) " (Items provided: ${itemDescriptions.joinToString(", ")})" else ""
+            val promptText = "You are an expert fashion stylist. Analyze the clothing items in the provided images$itemsText. Suggest a complete outfit combination using these items$themeText, detailing why they work well together based on color, style, and the theme. Respond in Spanish."
 
             val request = OllamaRequest(
                 model = model,
                 prompt = promptText,
-                images = listOf(base64Image)
+                images = base64Images
             )
 
             val response: OllamaResponse = client.post("http://localhost:11434/api/generate") {

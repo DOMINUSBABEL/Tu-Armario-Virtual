@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.myapplication.common.api.OllamaClient
+import com.myapplication.common.db.DatabaseRepository
 import com.myapplication.common.gamification.ActionNotification
 import com.myapplication.common.gamification.GameState
 import com.myapplication.common.gamification.StyleStatsBar
@@ -16,7 +17,11 @@ import com.myapplication.common.image.ImagePicker
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
+fun MainScreen(
+    onNavigateToLeaderboard: () -> Unit,
+    onNavigateToWardrobe: () -> Unit,
+    onNavigateToRunway: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     var showImagePicker by remember { mutableStateOf(false) }
     var selectedImageBytes by remember { mutableStateOf<ByteArray?>(null) }
@@ -34,7 +39,17 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
             StyleStatsBar()
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("Your Wardrobe", style = MaterialTheme.typography.h4)
+            Text("DressYourself Studio", style = MaterialTheme.typography.h4)
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                Button(onClick = onNavigateToWardrobe) {
+                    Text("My Wardrobe")
+                }
+                Button(onClick = onNavigateToRunway, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)) {
+                    Text("Join Runway")
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
@@ -43,6 +58,9 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
             ) {
                 Text("View Badges & Rankings", color = MaterialTheme.colors.onSecondary)
             }
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Divider()
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(onClick = { showImagePicker = true }) {
@@ -52,7 +70,7 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             if (selectedImageBytes != null) {
-                Text("Image selected successfully.")
+                Text("Image selected successfully.", color = MaterialTheme.colors.primary)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
@@ -73,7 +91,7 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
                         isLoading = true
                         aiSuggestion = ""
                         coroutineScope.launch {
-                            val response = ollamaClient.getOutfitSuggestion(selectedImageBytes!!, occasion)
+                            val response = ollamaClient.getOutfitSuggestion(listOf(selectedImageBytes!!), occasion)
                             aiSuggestion = response
                             isLoading = false
                             GameState.addAction("Outfit Generated", 50)
@@ -114,6 +132,8 @@ fun MainScreen(onNavigateToLeaderboard: () -> Unit) {
         onImagePicked = { bytes ->
             if (bytes != null) {
                 selectedImageBytes = bytes
+                // Save to local database for the real wardrobe feature
+                DatabaseRepository.insertWardrobeItem("Uncategorized", "Unknown", bytes)
                 GameState.addAction("Clothes Uploaded", 15)
             } else {
                 GameState.resetStreak()

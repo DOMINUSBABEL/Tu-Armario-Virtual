@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        com.myapplication.common.db.DatabaseRepository.init(
+            com.myapplication.common.DatabaseDriverFactory(this)
+        )
 
         setContent {
             MainView()

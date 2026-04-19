@@ -35,3 +35,17 @@ CREATE TABLE OutfitPrenda (
     FOREIGN KEY(prendaId) REFERENCES Prenda(id) ON DELETE CASCADE,
     PRIMARY KEY(outfitId, prendaId)
 );
+
+CREATE TABLE WardrobeItem (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category TEXT NOT NULL,
+    color TEXT NOT NULL,
+    imageBytes BLOB NOT NULL
+);
+
+insertWardrobeItem:
+INSERT INTO WardrobeItem(category, color, imageBytes)
+VALUES (?, ?, ?);
+
+selectAllWardrobeItems:
+SELECT * FROM WardrobeItem ORDER BY id DESC;
