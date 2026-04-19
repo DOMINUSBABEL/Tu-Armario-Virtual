@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("app.cash.sqldelight")
+    kotlin("plugin.serialization")
 }
 
 sqldelight {
@@ -30,6 +31,8 @@ kotlin {
     }
 
     sourceSets {
+        val ktorVersion = "2.3.2"
+
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
@@ -38,6 +41,11 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
             }
         }
         val androidMain by getting {
@@ -46,6 +54,7 @@ kotlin {
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.10.1")
                 implementation("app.cash.sqldelight:android-driver:2.0.2")
+                implementation("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
         val iosX64Main by getting
@@ -58,12 +67,15 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation("app.cash.sqldelight:native-driver:2.0.2")
+                implementation("io.ktor:ktor-client-darwin:$ktorVersion")
             }
         }
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation("app.cash.sqldelight:sqlite-driver:2.0.2")
+                implementation("io.ktor:ktor-client-cio:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
             }
         }
     }
