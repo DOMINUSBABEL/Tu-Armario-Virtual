@@ -16,7 +16,10 @@ import kotlin.random.Random
 val themes = listOf("Cyberpunk", "Y2K", "Business Casual", "Streetwear", "Goth", "Vintage 80s")
 
 @Composable
-fun RunwayScreen(onNavigateBack: () -> Unit) {
+fun RunwayScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateToShowcase: (String, String) -> Unit
+) {
     var activeTheme by remember { mutableStateOf(themes.random()) }
     var aiSuggestion by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -98,6 +101,14 @@ fun RunwayScreen(onNavigateBack: () -> Unit) {
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { onNavigateToShowcase(aiSuggestion, activeTheme) },
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Enter the Runway!", color = androidx.compose.ui.graphics.Color.White)
+            }
         }
     }
 }

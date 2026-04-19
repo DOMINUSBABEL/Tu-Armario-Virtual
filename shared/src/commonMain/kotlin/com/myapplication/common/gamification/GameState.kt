@@ -9,6 +9,8 @@ object GameState {
         private set
     var fashionLevel by mutableStateOf(1)
         private set
+    var dyCoins by mutableStateOf(0)
+        private set
     var styleStreak by mutableStateOf(0)
         private set
     var streakMultiplier by mutableStateOf(1)
@@ -18,13 +20,21 @@ object GameState {
         private set
 
     val title: String
-        get() = when (fashionLevel) {
-            1 -> "Novice Dresser"
-            2 -> "Style Apprentice"
-            3 -> "Trendsetter"
-            4 -> "Fashion Icon"
-            5 -> "Runway Model"
-            else -> "Style Guru"
+        get() = when {
+            stylePoints < 500 -> "New Model"
+            stylePoints < 1500 -> "Trendsetter"
+            stylePoints < 3000 -> "Runway Queen / King"
+            stylePoints < 5000 -> "Fashion Icon"
+            else -> "Top Model"
+        }
+
+    val rankEmoji: String
+        get() = when {
+            stylePoints < 500 -> "🥉"
+            stylePoints < 1500 -> "🥈"
+            stylePoints < 3000 -> "🥇"
+            stylePoints < 5000 -> "💎"
+            else -> "👑"
         }
 
     val unlockedBadges: List<String>
@@ -52,6 +62,11 @@ object GameState {
         val levelUpText = if (fashionLevel > previousLevel) "\n🎉 Level Up! You are now a $title!" else ""
 
         lastActionMessage = "+$earnedPoints SP ($actionName)! Streak x$streakMultiplier.$levelUpText"
+    }
+
+    fun awardCoins(amount: Int) {
+        dyCoins += amount
+        lastActionMessage = "You earned $amount DY Coins! 💰"
     }
 
     fun resetStreak() {

@@ -13,6 +13,7 @@ import com.myapplication.common.ui.MainScreen
 import com.myapplication.common.ui.LeaderboardScreen
 import com.myapplication.common.ui.WardrobeScreen
 import com.myapplication.common.ui.RunwayScreen
+import com.myapplication.common.ui.RunwayShowcaseScreen
 
 val HotPink = Color(0xFFFF69B4)
 val DeepPurple = Color(0xFF4B0082)
@@ -36,7 +37,7 @@ fun App() {
     ) {
         var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Login) }
 
-        when (currentScreen) {
+        when (val screen = currentScreen) {
             is AppScreen.Login -> LoginScreen(onNavigateToTutorial = { currentScreen = AppScreen.Tutorial })
             is AppScreen.Tutorial -> TutorialScreen(onNavigateToMain = { currentScreen = AppScreen.Main })
             is AppScreen.Main -> MainScreen(
@@ -46,7 +47,15 @@ fun App() {
             )
             is AppScreen.Leaderboard -> LeaderboardScreen(onNavigateBack = { currentScreen = AppScreen.Main })
             is AppScreen.Wardrobe -> WardrobeScreen(onNavigateBack = { currentScreen = AppScreen.Main })
-            is AppScreen.Runway -> RunwayScreen(onNavigateBack = { currentScreen = AppScreen.Main })
+            is AppScreen.Runway -> RunwayScreen(
+                onNavigateBack = { currentScreen = AppScreen.Main },
+                onNavigateToShowcase = { desc, theme -> currentScreen = AppScreen.RunwayShowcase(desc, theme) }
+            )
+            is AppScreen.RunwayShowcase -> RunwayShowcaseScreen(
+                outfitDescription = screen.outfitDescription,
+                theme = screen.theme,
+                onNavigateBack = { currentScreen = AppScreen.Main }
+            )
         }
     }
 }
