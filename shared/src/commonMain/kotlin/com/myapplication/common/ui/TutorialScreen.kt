@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.myapplication.common.gamification.GameState
 
 @Composable
 fun TutorialScreen(onNavigateToMain: () -> Unit) {
@@ -21,6 +22,12 @@ fun TutorialScreen(onNavigateToMain: () -> Unit) {
             text = "Welcome to AI Outfit Recommender!",
             style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Complete this tutorial to earn 20 Style Points!",
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.secondary
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -43,7 +50,10 @@ fun TutorialScreen(onNavigateToMain: () -> Unit) {
         Spacer(modifier = Modifier.height(48.dp))
 
         Button(
-            onClick = onNavigateToMain,
+            onClick = {
+                GameState.addAction("Tutorial Complete", 20)
+                onNavigateToMain()
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Let's Get Started")
