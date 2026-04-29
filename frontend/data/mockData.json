@@ -1,0 +1,78 @@
+{
+  "defaultWardrobe": [
+    {
+      "id": "w1",
+      "name": "Classic White Tee",
+      "category": "Tops",
+      "imageUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "w2",
+      "name": "Vintage Denim",
+      "category": "Bottoms",
+      "imageUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "w3",
+      "name": "Black Leather Jacket",
+      "category": "Tops",
+      "imageUrl": "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "w4",
+      "name": "Beige Chinos",
+      "category": "Bottoms",
+      "imageUrl": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "w5",
+      "name": "White Canvas Sneakers",
+      "category": "Shoes",
+      "imageUrl": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "w6",
+      "name": "Black Chelsea Boots",
+      "category": "Shoes",
+      "imageUrl": "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    }
+  ],
+  "brandOffers": [
+    {
+      "id": "b1",
+      "brandName": "Adidas",
+      "itemName": "Green Samba Sneakers",
+      "category": "Shoes",
+      "imageUrl": "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      "costInCoins": 500,
+      "realBenefit": "15% OFF real store"
+    },
+    {
+      "id": "b2",
+      "brandName": "Zara",
+      "itemName": "Fall Trench Coat",
+      "category": "Tops",
+      "imageUrl": "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      "costInCoins": 800,
+      "realBenefit": "Free Shipping & 10% OFF"
+    },
+    {
+      "id": "b3",
+      "brandName": "Levis",
+      "itemName": "501 Original Fit Jeans",
+      "category": "Bottoms",
+      "imageUrl": "https://images.unsplash.com/photo-1604176354204-9268737828e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      "costInCoins": 600,
+      "realBenefit": "20% OFF real store"
+    },
+    {
+      "id": "b4",
+      "brandName": "H&M",
+      "itemName": "Oversized Knit Sweater",
+      "category": "Tops",
+      "imageUrl": "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      "costInCoins": 300,
+      "realBenefit": "Buy 1 Get 1 50% OFF"
+    }
+  ]
+}
