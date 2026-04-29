@@ -19,20 +19,21 @@ val HotPink = Color(0xFFFF69B4)
 val DeepPurple = Color(0xFF4B0082)
 val NeonPink = Color(0xFFFF1493)
 val DarkBackground = Color(0xFF1A1A2E)
+val LightBackground = Color(0xFFFFFFFF)
 
 @Composable
 fun App() {
     MaterialTheme(
-        colors = darkColors(
-            primary = HotPink,
-            primaryVariant = NeonPink,
-            secondary = DeepPurple,
-            background = DarkBackground,
-            surface = Color(0xFF252542),
+        colors = androidx.compose.material.lightColors(
+            primary = DeepPurple,
+            primaryVariant = Color(0xFF320059),
+            secondary = NeonPink,
+            background = LightBackground,
+            surface = Color(0xFFF7F7F7),
             onPrimary = Color.White,
             onSecondary = Color.White,
-            onBackground = Color.White,
-            onSurface = Color.White
+            onBackground = Color.Black,
+            onSurface = Color.Black
         )
     ) {
         var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Login) }
