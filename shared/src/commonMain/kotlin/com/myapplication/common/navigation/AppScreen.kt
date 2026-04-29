@@ -6,6 +6,7 @@ sealed class AppScreen {
     object Main : AppScreen()
     object Leaderboard : AppScreen()
     object Wardrobe : AppScreen()
+    object Shop : AppScreen()
     object Runway : AppScreen()
     data class RunwayShowcase(val outfitDescription: String, val theme: String) : AppScreen()
 }

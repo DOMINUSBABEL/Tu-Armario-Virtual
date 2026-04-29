@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +32,7 @@ import com.myapplication.common.db.DatabaseRepository
 import com.myapplication.common.gamification.ActionNotification
 import com.myapplication.common.gamification.GameState
 import com.myapplication.common.image.ImagePicker
+import com.myapplication.common.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -37,7 +40,8 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     onNavigateToLeaderboard: () -> Unit,
     onNavigateToWardrobe: () -> Unit,
-    onNavigateToRunway: () -> Unit
+    onNavigateToRunway: () -> Unit,
+    onNavigateToShop: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var showImagePicker by remember { mutableStateOf(false) }
@@ -45,24 +49,16 @@ fun MainScreen(
     var analysisResult by remember { mutableStateOf("") }
     var isAnalyzing by remember { mutableStateOf(false) }
 
-    // Minimalist, premium color palette
-    val primaryPurple = Color(0xFF3B0B59) // Deeper, more elegant purple
-    val accentPink = Color(0xFFE91E63) // Vibrant but sophisticated pink
-    val surfaceWhite = Color(0xFFFFFFFF)
-    val backgroundLight = Color(0xFFFAFAFC) // Very light gray-bone for contrast
-    val textPrimary = Color(0xFF1C1C1E)
-    val textSecondary = Color(0xFF8E8E93)
-
     Scaffold(
-        backgroundColor = backgroundLight,
+        backgroundColor = MaterialTheme.colors.background,
         bottomBar = {
             BottomNavigation(
-                backgroundColor = surfaceWhite,
+                backgroundColor = MaterialTheme.colors.surface,
                 elevation = 24.dp
             ) {
                 BottomNavigationItem(
-                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home", tint = primaryPurple) },
-                    label = { Text("Home", color = primaryPurple, fontSize = 10.sp, fontWeight = FontWeight.Medium) },
+                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home", tint = MaterialTheme.colors.primary) },
+                    label = { Text("Home", color = MaterialTheme.colors.primary, fontSize = 10.sp, fontWeight = FontWeight.Medium) },
                     selected = true,
                     onClick = { /* Current Screen */ }
                 )
@@ -76,8 +72,8 @@ fun MainScreen(
                     icon = {
                         Box(
                             modifier = Modifier
-                                .size(36.dp)
-                                .background(Brush.linearGradient(listOf(accentPink, primaryPurple)), RoundedCornerShape(12.dp)),
+                                .size(40.dp)
+                                .background(Brush.linearGradient(listOf(MaterialTheme.colors.secondary, MaterialTheme.colors.primary)), RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(Icons.Filled.Add, contentDescription = "Upload", tint = Color.White)
@@ -88,10 +84,10 @@ fun MainScreen(
                     onClick = { showImagePicker = true }
                 )
                 BottomNavigationItem(
-                    icon = { Icon(Icons.Filled.Person, contentDescription = "Profile", tint = Color.LightGray) },
-                    label = { Text("Profile", color = Color.LightGray, fontSize = 10.sp) },
+                    icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Shop", tint = Color.LightGray) },
+                    label = { Text("Shop", color = Color.LightGray, fontSize = 10.sp) },
                     selected = false,
-                    onClick = onNavigateToLeaderboard
+                    onClick = onNavigateToShop
                 )
             }
         }
@@ -105,7 +101,7 @@ fun MainScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Gamification Header (Integrated, clean)
-                GamificationHeader(primaryPurple, accentPink)
+                GamificationHeader(MaterialTheme.colors.primary, MaterialTheme.colors.secondary)
                 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -113,17 +109,11 @@ fun MainScreen(
                 Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
                     Text(
                         text = "DressYourself",
-                        fontSize = 32.sp,
-                        fontFamily = FontFamily.Serif, // Sophisticated touch
-                        fontWeight = FontWeight.Bold,
-                        color = textPrimary,
-                        letterSpacing = (-0.5).sp
+                        style = MaterialTheme.typography.h1
                     )
                     Text(
                         text = "Curate your perfect style.",
-                        fontSize = 14.sp,
-                        color = textSecondary,
-                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.body2,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
@@ -139,8 +129,8 @@ fun MainScreen(
                     item {
                         ActionCardMini(
                             title = "Wardrobe",
-                            icon = Icons.Filled.List,
-                            color = primaryPurple,
+                            icon = Icons.AutoMirrored.Filled.List,
+                            color = MaterialTheme.colors.primary,
                             onClick = onNavigateToWardrobe
                         )
                     }
@@ -148,7 +138,7 @@ fun MainScreen(
                         ActionCardMini(
                             title = "Runway",
                             icon = Icons.Filled.Star,
-                            color = accentPink,
+                            color = MaterialTheme.colors.secondary,
                             onClick = onNavigateToRunway
                         )
                     }
@@ -156,7 +146,7 @@ fun MainScreen(
                         ActionCardMini(
                             title = "Ranks",
                             icon = Icons.Filled.ThumbUp,
-                            color = primaryPurple,
+                            color = MaterialTheme.colors.primary,
                             onClick = onNavigateToLeaderboard
                         )
                     }
@@ -164,7 +154,7 @@ fun MainScreen(
                         ActionCardMini(
                             title = "Scan",
                             icon = Icons.Filled.Face,
-                            color = primaryPurple,
+                            color = MaterialTheme.colors.primary,
                             onClick = { showImagePicker = true }
                         )
                     }
@@ -181,14 +171,12 @@ fun MainScreen(
                     ) {
                         Text(
                             text = "Fashion Insights",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textPrimary
+                            style = MaterialTheme.typography.subtitle1
                         )
                         Text(
                             text = "See all",
                             fontSize = 14.sp,
-                            color = accentPink,
+                            color = MaterialTheme.colors.secondary,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.clickable { /* TODO: Navigate to blog/tips list */ }
                         )
@@ -196,7 +184,7 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     // Editorial Card
-                    EditorialTipCard(primaryPurple, accentPink)
+                    EditorialTipCard(MaterialTheme.colors.primary, MaterialTheme.colors.secondary)
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -207,20 +195,20 @@ fun MainScreen(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
                         shape = RoundedCornerShape(24.dp),
                         elevation = 4.dp,
-                        backgroundColor = surfaceWhite
+                        backgroundColor = MaterialTheme.colors.surface
                     ) {
                         Column(modifier = Modifier.padding(24.dp)) {
-                            Text("Scanner Result", fontFamily = FontFamily.Serif, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = primaryPurple)
+                            Text("Scanner Result", style = MaterialTheme.typography.h3)
                             Spacer(modifier = Modifier.height(16.dp))
                             
                             if (isAnalyzing) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    CircularProgressIndicator(color = accentPink, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                                    CircularProgressIndicator(color = MaterialTheme.colors.secondary, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                                     Spacer(modifier = Modifier.width(16.dp))
-                                    Text("Extracting styling properties...", color = textSecondary, fontSize = 14.sp)
+                                    Text("Extracting styling properties...", style = MaterialTheme.typography.body2)
                                 }
                             } else if (analysisResult.isNotEmpty()) {
-                                Text(analysisResult, color = textPrimary, fontSize = 14.sp, lineHeight = 20.sp)
+                                Text(analysisResult, style = MaterialTheme.typography.body1)
                             } else {
                                 Button(
                                     onClick = {
@@ -233,7 +221,7 @@ fun MainScreen(
                                             GameState.addAction("Visual Analysis", 30)
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = primaryPurple),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                                     shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -273,13 +261,13 @@ fun EditorialTipCard(primaryColor: Color, accentColor: Color) {
         elevation = 6.dp
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Abstract background gradient (replacing an image for now)
+            // Abstract background gradient
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         Brush.linearGradient(
-                            colors = listOf(Color(0xFFEFE7F8), Color(0xFFFDE9F0)),
+                            colors = listOf(Color(0xFFEFE7F8), Color(0xFFFDF2F8)),
                             start = androidx.compose.ui.geometry.Offset(0f, 0f),
                             end = androidx.compose.ui.geometry.Offset(1000f, 1000f)
                         )
@@ -298,26 +286,21 @@ fun EditorialTipCard(primaryColor: Color, accentColor: Color) {
                         .background(Color.White.copy(alpha = 0.8f), RoundedCornerShape(8.dp))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
-                    Text("STYLE TIP OF THE DAY", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = primaryColor, letterSpacing = 1.sp)
+                    Text("STYLE TIP OF THE DAY", style = MaterialTheme.typography.overline)
                 }
                 
                 // Content
                 Column {
                     Text(
                         text = "The Power of Neutrals",
-                        fontFamily = FontFamily.Serif,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = primaryColor
+                        style = MaterialTheme.typography.h2
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "How to combine earthy tones to project an image of quiet authority and modern elegance.",
-                        fontSize = 13.sp,
-                        color = Color(0xFF555555),
+                        style = MaterialTheme.typography.body2,
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        lineHeight = 18.sp
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 
@@ -325,7 +308,7 @@ fun EditorialTipCard(primaryColor: Color, accentColor: Color) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Read Article", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = accentColor)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Icon(Icons.Filled.ArrowForward, contentDescription = "Read", tint = accentColor, modifier = Modifier.size(14.dp))
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Read", tint = accentColor, modifier = Modifier.size(14.dp))
                 }
             }
         }
@@ -391,14 +374,12 @@ fun GamificationHeader(primaryColor: Color, accentColor: Color) {
             Column {
                 Text(
                     text = "Lvl ${GameState.fashionLevel} — ${GameState.title}",
-                    fontWeight = FontWeight.Bold,
-                    color = primaryColor,
-                    fontSize = 14.sp
+                    style = MaterialTheme.typography.subtitle1
                 )
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
                     Icon(Icons.Filled.Star, contentDescription = "SP", tint = accentColor, modifier = Modifier.size(12.dp))
                     Spacer(modifier = Modifier.width(2.dp))
-                    Text("${GameState.stylePoints} SP", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text("${GameState.stylePoints} SP", style = MaterialTheme.typography.body2)
                 }
             }
         }
