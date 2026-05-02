@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
+import com.myapplication.common.unity.sendTextureTo3DEngine
 
 @Composable
 fun ShopScreen(onNavigateBack: () -> Unit) {
@@ -102,7 +103,11 @@ fun ShopItemCardGlass(item: ShopItem) {
         modifier = Modifier
             .fillMaxWidth()
             .height(240.dp)
-            .clickable { /* Tapping applies texture to 3D avatar */ },
+            .clickable { 
+                // A valid 1x1 red transparent PNG base64 to test the texture bridge
+                val dummyRedTexture = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+                sendTextureTo3DEngine(dummyRedTexture)
+            },
         alpha = 0.7f,
         cornerRadius = 16.dp
     ) {

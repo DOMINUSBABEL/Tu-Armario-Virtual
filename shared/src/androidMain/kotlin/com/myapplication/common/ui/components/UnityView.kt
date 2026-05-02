@@ -1,42 +1,40 @@
 package com.myapplication.common.ui.components
 
+import android.annotation.SuppressLint
 import android.graphics.Color as AndroidColor
-import android.view.Gravity
-import android.widget.FrameLayout
-import android.widget.TextView
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 actual fun UnityView(modifier: Modifier) {
     AndroidView(
         modifier = modifier,
         factory = { context ->
-            // In a fully integrated UaaL environment, this would be:
-            // val unityPlayer = com.unity3d.player.UnityPlayer(context)
-            // return unityPlayer
-            
-            // For now, we simulate the Unity surface so the app compiles
-            // and the Glassmorphism UI can be tested over it.
-            FrameLayout(context).apply {
-                setBackgroundColor(AndroidColor.parseColor("#15151A"))
+            WebView(context).apply {
+                setBackgroundColor(AndroidColor.parseColor("#0F0F13"))
+                settings.javaScriptEnabled = true
+                settings.allowFileAccess = true
+                settings.allowFileAccessFromFileURLs = true
+                settings.allowUniversalAccessFromFileURLs = true
+                settings.domStorageEnabled = true
+                settings.cacheMode = WebSettings.LOAD_NO_CACHE
                 
-                val textView = TextView(context).apply {
-                    text = "UNITY 3D RENDER SURFACE\n(Android UaaL Bridge Connected)"
-                    setTextColor(AndroidColor.GREEN)
-                    textSize = 18f
-                    gravity = Gravity.CENTER
-                }
+                webViewClient = WebViewClient()
                 
-                addView(textView, FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                ))
+                // Load the local HTML file that runs Three.js and the GLB model
+                loadUrl("file:///android_asset/avatar_renderer.html")
+                
+                // Store a global reference so UnityBridge can access it
+                com.myapplication.common.unity.UnityBridge.activeWebView = this
             }
         },
         update = { view ->
-            // Update logic if needed when Compose state changes
+            // Update logic if needed
         }
     )
 }

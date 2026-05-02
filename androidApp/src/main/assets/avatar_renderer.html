@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0F0F13; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <!-- Three.js and GLTFLoader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, model, mixer;
+        let clock = new THREE.Clock();
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = null; // Transparent/Dark background handled by CSS/Compose
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 1, 3); // Adjust based on CesiumMan size
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            document.body.appendChild(renderer.domElement);
+
+            // Lighting (Neon/Studio feel)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(5, 5, 5);
+            scene.add(dirLight);
+            
+            const backLight = new THREE.DirectionalLight(0xFF7A9A, 1.5); // Neon Peach backlight
+            backLight.position.set(-5, 5, -5);
+            scene.add(backLight);
+
+            // Controls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enablePan = false;
+            controls.target.set(0, 1, 0);
+            controls.update();
+
+            // Load GLB Model
+            const loader = new THREE.GLTFLoader();
+            loader.load('CesiumMan.glb', function (gltf) {
+                model = gltf.scene;
+                
+                // Center and scale the model
+                model.position.set(0, 0, 0);
+                scene.add(model);
+
+                // Animation
+                if (gltf.animations && gltf.animations.length > 0) {
+                    mixer = new THREE.AnimationMixer(model);
+                    mixer.clipAction(gltf.animations[0]).play();
+                }
+            }, undefined, function (error) {
+                console.error(error);
+            });
+
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            if (mixer) mixer.update(delta);
+            // Slowly rotate the model
+            if (model) model.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+
+        // --- Bridge Function called from Kotlin ---
+        window.applyGarmentTexture = function(base64Data) {
+            console.log("Applying new texture to avatar...");
+            if (!model) return;
+
+            const image = new Image();
+            image.onload = function() {
+                const texture = new THREE.Texture(image);
+                texture.needsUpdate = true;
+                texture.flipY = false; // Important for GLTF
+                texture.encoding = THREE.sRGBEncoding;
+
+                // Traverse the model and apply texture to materials
+                model.traverse(function (child) {
+                    if (child.isMesh) {
+                        // Apply to the first material or specifically named material
+                        // For CesiumMan, there's usually one main material
+                        if (child.material) {
+                            child.material.map = texture;
+                            child.material.needsUpdate = true;
+                        }
+                    }
+                });
+            };
+            image.src = "data:image/png;base64," + base64Data;
+        };
+
+        init();
+    </script>
+</body>
+</html>
