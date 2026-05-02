@@ -90,13 +90,35 @@
         }
 
         // --- Bridge Function called from Kotlin ---
-        window.applyGarmentTexture = function(base64Data) {
-            console.log("Applying new texture to avatar...");
+        window.applyGarmentTexture = function(imageUrl) {
+            console.log("Applying new texture to avatar from URL:", imageUrl);
             if (!model) return;
 
             const image = new Image();
+            image.crossOrigin = "Anonymous"; // Fix for external images in WebGL
             image.onload = function() {
-                const texture = new THREE.Texture(image);
+                // UV Warping / Canvas Compositing Hack for the Demo
+                // Create a 1024x1024 canvas (standard UV map size)
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024;
+                canvas.height = 1024;
+                const ctx = canvas.getContext('2d');
+
+                // Fill background (optional, could be skin color)
+                ctx.fillStyle = "#E8C1A8"; 
+                ctx.fillRect(0, 0, 1024, 1024);
+
+                // Calculate a mock "chest" area for the UV map (assuming typical T-pose model mapping)
+                // We'll scale the garment image to fit the torso
+                const imgAspect = image.width / image.height;
+                const targetW = 400;
+                const targetH = targetW / imgAspect;
+                const offsetX = (1024 - targetW) / 2;
+                const offsetY = 300; // Push down to chest area
+
+                ctx.drawImage(image, offsetX, offsetY, targetW, targetH);
+
+                const texture = new THREE.CanvasTexture(canvas);
                 texture.needsUpdate = true;
                 texture.flipY = false; // Important for GLTF
                 texture.encoding = THREE.sRGBEncoding;
@@ -104,8 +126,6 @@
                 // Traverse the model and apply texture to materials
                 model.traverse(function (child) {
                     if (child.isMesh) {
-                        // Apply to the first material or specifically named material
-                        // For CesiumMan, there's usually one main material
                         if (child.material) {
                             child.material.map = texture;
                             child.material.needsUpdate = true;
@@ -113,7 +133,16 @@
                     }
                 });
             };
-            image.src = "data:image/png;base64," + base64Data;
+            image.onerror = function() {
+                console.error("Failed to load image for 3D texture:", imageUrl);
+            };
+            
+            // Handle Base64 or external URLs smoothly
+            if (imageUrl.startsWith("data:")) {
+                image.src = imageUrl;
+            } else {
+                image.src = imageUrl;
+            }
         };
 
         init();

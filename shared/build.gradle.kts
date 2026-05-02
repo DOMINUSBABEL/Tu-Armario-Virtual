@@ -46,6 +46,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                implementation("media.kamel:kamel-image:0.7.3")
             }
         }
         val androidMain by getting {
@@ -53,6 +54,7 @@ kotlin {
                 api("androidx.activity:activity-compose:1.7.2")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.10.1")
+                implementation("androidx.webkit:webkit:1.8.0")
                 implementation("app.cash.sqldelight:android-driver:2.0.2")
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
             }

@@ -2,12 +2,15 @@ package com.myapplication.common.ui.components
 
 import android.annotation.SuppressLint
 import android.graphics.Color as AndroidColor
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.webkit.WebViewAssetLoader
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -24,17 +27,25 @@ actual fun UnityView(modifier: Modifier) {
                 settings.domStorageEnabled = true
                 settings.cacheMode = WebSettings.LOAD_NO_CACHE
                 
-                webViewClient = WebViewClient()
+                val assetLoader = WebViewAssetLoader.Builder()
+                    .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
+                    .build()
+
+                webViewClient = object : WebViewClient() {
+                    override fun shouldInterceptRequest(
+                        view: WebView,
+                        request: WebResourceRequest
+                    ): WebResourceResponse? {
+                        return assetLoader.shouldInterceptRequest(request.url)
+                    }
+                }
                 
-                // Load the local HTML file that runs Three.js and the GLB model
-                loadUrl("file:///android_asset/avatar_renderer.html")
+                // Load via standard HTTPS protocol targeting the internal assets folder
+                loadUrl("https://appassets.androidplatform.net/assets/avatar_renderer.html")
                 
-                // Store a global reference so UnityBridge can access it
                 com.myapplication.common.unity.UnityBridge.activeWebView = this
             }
         },
-        update = { view ->
-            // Update logic if needed
-        }
+        update = { view -> }
     )
 }

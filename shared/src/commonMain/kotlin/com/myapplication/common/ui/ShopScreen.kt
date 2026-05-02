@@ -16,12 +16,14 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
+import com.myapplication.common.ui.components.AsyncImage
 import com.myapplication.common.unity.sendTextureTo3DEngine
 
 @Composable
@@ -95,7 +97,7 @@ fun ShopScreen(onNavigateBack: () -> Unit) {
     }
 }
 
-data class ShopItem(val id: String, val name: String, val store: String, val price: Double, val affiliateLink: String)
+data class ShopItem(val id: String, val name: String, val store: String, val price: Double, val image: String, val affiliateLink: String)
 
 @Composable
 fun ShopItemCardGlass(item: ShopItem) {
@@ -104,26 +106,25 @@ fun ShopItemCardGlass(item: ShopItem) {
             .fillMaxWidth()
             .height(240.dp)
             .clickable { 
-                // A valid 1x1 red transparent PNG base64 to test the texture bridge
-                val dummyRedTexture = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
-                sendTextureTo3DEngine(dummyRedTexture)
+                sendTextureTo3DEngine(item.image)
             },
         alpha = 0.7f,
         cornerRadius = 16.dp
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Image Placeholder (Transparent/Slight tint)
+            // Real Image via AsyncImage
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .background(Color.White.copy(alpha = 0.05f)),
+                    .background(Color.White.copy(alpha = 0.05f))
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Tap to Try-On 3D",
-                    color = Color.LightGray,
-                    style = MaterialTheme.typography.caption
+                AsyncImage(
+                    url = item.image,
+                    contentDescription = item.name,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
