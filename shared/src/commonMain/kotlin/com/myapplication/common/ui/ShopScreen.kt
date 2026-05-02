@@ -25,11 +25,17 @@ import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
 import com.myapplication.common.ui.components.AsyncImage
 import com.myapplication.common.unity.sendTextureTo3DEngine
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.myapplication.common.ui.components.WebBrowserView
 
 @Composable
 fun ShopScreen(onNavigateBack: () -> Unit) {
     var selectedBrand by remember { mutableStateOf("All") }
     val brands = listOf("All", "Vélez", "Arturo Calle", "TRUE")
+    
+    // State for In-App Browser
+    var browserUrl by remember { mutableStateOf<String?>(null) }
 
     val filteredItems = if (selectedBrand == "All") {
         com.myapplication.common.data.CatalogData.fullCatalog
@@ -89,7 +95,35 @@ fun ShopScreen(onNavigateBack: () -> Unit) {
                     contentPadding = PaddingValues(bottom = 32.dp, top = 8.dp)
                 ) {
                     items(filteredItems) { item ->
-                        ShopItemCardGlass(item)
+                        ShopItemCardGlass(
+                            item = item,
+                            onOpenUrl = { url -> browserUrl = url }
+                        )
+                    }
+                }
+            }
+        }
+        
+        // In-App Browser Dialog
+        if (browserUrl != null) {
+            Dialog(
+                onDismissRequest = { browserUrl = null },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) {
+                Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Browser Toolbar
+                        Row(
+                            modifier = Modifier.fillMaxWidth().background(Color(0xFF1E1E24)).padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = { browserUrl = null }) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close Browser", tint = Color.White)
+                            }
+                            Text("Store Checkout", color = Color.White, style = MaterialTheme.typography.subtitle1)
+                        }
+                        // Web Content
+                        WebBrowserView(url = browserUrl!!, modifier = Modifier.fillMaxSize())
                     }
                 }
             }
@@ -100,7 +134,7 @@ fun ShopScreen(onNavigateBack: () -> Unit) {
 data class ShopItem(val id: String, val name: String, val store: String, val price: Double, val image: String, val affiliateLink: String)
 
 @Composable
-fun ShopItemCardGlass(item: ShopItem) {
+fun ShopItemCardGlass(item: ShopItem, onOpenUrl: (String) -> Unit) {
     GlassPanel(
         modifier = Modifier
             .fillMaxWidth()
@@ -161,7 +195,7 @@ fun ShopItemCardGlass(item: ShopItem) {
                 
                 // Buy Button
                 Button(
-                    onClick = { /* Open web browser with affiliate link */ },
+                    onClick = { onOpenUrl(item.affiliateLink) },
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth().height(32.dp),
