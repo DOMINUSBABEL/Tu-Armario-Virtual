@@ -30,19 +30,20 @@ import com.myapplication.common.unity.sendTextureTo3DEngine
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.myapplication.common.ui.components.WebBrowserView
+import androidx.compose.material.icons.filled.Search
 
 @Composable
 fun ShopScreen(onNavigateBack: () -> Unit) {
     var selectedBrand by remember { mutableStateOf("All") }
-    val brands = listOf("All", "Vélez", "Arturo Calle", "TRUE")
+    var searchQuery by remember { mutableStateOf("") }
+    val brands = listOf("All", "Vélez", "Arturo Calle", "TRUE", "H&M")
     
     // State for In-App Browser
     var browserUrl by remember { mutableStateOf<String?>(null) }
 
-    val filteredItems = if (selectedBrand == "All") {
-        com.myapplication.common.data.CatalogData.fullCatalog
-    } else {
-        com.myapplication.common.data.CatalogData.fullCatalog.filter { it.store == selectedBrand }
+    val filteredItems = com.myapplication.common.data.CatalogData.fullCatalog.filter { 
+        (selectedBrand == "All" || it.store == selectedBrand) &&
+        (searchQuery.isBlank() || it.name.contains(searchQuery, ignoreCase = true))
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -144,7 +145,7 @@ fun ShopItemCardGlass(item: ShopItem, onOpenUrl: (String) -> Unit) {
             .clickable { 
                 // The WebViewAssetLoader expects https://appassets.androidplatform.net/assets/ for local assets
                 val webViewUrl = item.image.replace("file:///android_asset/", "https://appassets.androidplatform.net/assets/")
-                sendTextureTo3DEngine(webViewUrl)
+                sendTextureTo3DEngine(webViewUrl, false)
             },
         alpha = 0.7f,
         cornerRadius = 16.dp

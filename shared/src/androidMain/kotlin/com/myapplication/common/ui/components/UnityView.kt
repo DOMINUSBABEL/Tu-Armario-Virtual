@@ -1,7 +1,9 @@
 package com.myapplication.common.ui.components
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color as AndroidColor
+import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
@@ -11,8 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.webkit.WebViewAssetLoader
+import com.myapplication.common.gamification.GameState
 
-@SuppressLint("SetJavaScriptEnabled")
+class WebAppInterface {
+    @JavascriptInterface
+    fun onSnapshotReady(base64Data: String) {
+        GameState.lastSnapshot = base64Data
+        GameState.isSnapshotReady = true
+    }
+}
+
+@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
 @Composable
 actual fun UnityView(modifier: Modifier) {
     AndroidView(
@@ -26,6 +37,8 @@ actual fun UnityView(modifier: Modifier) {
                 settings.allowUniversalAccessFromFileURLs = true
                 settings.domStorageEnabled = true
                 settings.cacheMode = WebSettings.LOAD_NO_CACHE
+                
+                addJavascriptInterface(WebAppInterface(), "AndroidBridge")
                 
                 val assetLoader = WebViewAssetLoader.Builder()
                     .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
@@ -46,6 +59,6 @@ actual fun UnityView(modifier: Modifier) {
                 com.myapplication.common.unity.UnityBridge.activeWebView = this
             }
         },
-        update = { view -> }
+        update = { _ -> }
     )
 }

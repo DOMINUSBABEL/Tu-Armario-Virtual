@@ -1,3 +1,4 @@
 package com.myapplication.common.unity
 
-expect fun sendTextureTo3DEngine(base64Texture: String)
+expect fun sendTextureTo3DEngine(textureData: String, isUserUpload: Boolean = false)
+expect fun exportAvatarSnapshot()

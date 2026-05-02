@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 object GameState {
+    var isSnapshotReady by mutableStateOf(false)
+    var lastSnapshot by mutableStateOf<String?>(null)
+
     var stylePoints by mutableStateOf(0)
         private set
     var fashionLevel by mutableStateOf(1)

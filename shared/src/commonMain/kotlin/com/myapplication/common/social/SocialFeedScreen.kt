@@ -21,17 +21,36 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.myapplication.common.gamification.GameState
+import com.myapplication.common.ui.components.AsyncImage
 import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
 
 @Composable
 fun SocialFeedScreen(onNavigateBack: () -> Unit) {
-    val mockPosts = remember {
-        listOf(
-            PostData("1", "Cyberpunk Neon Nights", "user_123", listOf("Cyberpunk", "Neon", "Temu")),
-            PostData("2", "Minimalist Elegance", "fashion_guru", listOf("Minimalist", "Elegant", "Shein")),
-            PostData("3", "Y2K Throwback Outfit", "retro_lover", listOf("Y2K", "Vintage", "Thrifted"))
+    var mockPosts by remember {
+        mutableStateOf(
+            listOf(
+                PostData("1", "Cyberpunk Neon Nights", "user_123", listOf("Cyberpunk", "Neon", "Temu")),
+                PostData("2", "Minimalist Elegance", "fashion_guru", listOf("Minimalist", "Elegant", "Shein")),
+                PostData("3", "Y2K Throwback Outfit", "retro_lover", listOf("Y2K", "Vintage", "Thrifted"))
+            )
         )
+    }
+
+    LaunchedEffect(GameState.lastSnapshot) {
+        val snapshot = GameState.lastSnapshot
+        if (snapshot != null) {
+            val newPost = PostData(
+                id = "my_post_${System.currentTimeMillis()}",
+                title = "My DY 3D Outfit",
+                author = "me",
+                tags = listOf("OOTD", "DY_Avatar", "SOTA"),
+                imageDataUrl = snapshot
+            )
+            mockPosts = listOf(newPost) + mockPosts
+            GameState.lastSnapshot = null
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -75,7 +94,7 @@ fun SocialFeedScreen(onNavigateBack: () -> Unit) {
     }
 }
 
-data class PostData(val id: String, val title: String, val author: String, val tags: List<String>)
+data class PostData(val id: String, val title: String, val author: String, val tags: List<String>, val imageDataUrl: String? = null)
 
 @Composable
 fun FeedItemGlass(post: PostData) {
@@ -93,6 +112,15 @@ fun FeedItemGlass(post: PostData) {
             
             // Invisible touch area to view the 3D model cleanly
             Box(modifier = Modifier.fillMaxSize().clickable { /* Hide UI to focus on 3D Model */ })
+
+            // Display user generated snapshot
+            if (post.imageDataUrl != null) {
+                AsyncImage(
+                    url = post.imageDataUrl,
+                    contentDescription = post.title,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
             // Glassmorphism info panel
             GlassPanel(

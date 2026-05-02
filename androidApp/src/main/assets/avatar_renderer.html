@@ -90,58 +90,100 @@
         }
 
         // --- Bridge Function called from Kotlin ---
-        window.applyGarmentTexture = function(imageUrl) {
-            console.log("Applying new texture to avatar from URL:", imageUrl);
+        window.applyGarmentTexture = function(imageUrl, isUserUpload = false) {
+            console.log("Applying SOTA texture to avatar from URL:", imageUrl);
             if (!model) return;
 
             const image = new Image();
             image.crossOrigin = "Anonymous"; // Fix for external images in WebGL
             image.onload = function() {
-                // UV Warping / Canvas Compositing Hack for the Demo
-                // Create a 1024x1024 canvas (standard UV map size)
+                // UV Warping / Canvas Compositing Hack for SOTA Render
                 const canvas = document.createElement('canvas');
                 canvas.width = 1024;
                 canvas.height = 1024;
                 const ctx = canvas.getContext('2d');
 
-                // Fill background (optional, could be skin color)
+                // Fill background (Skin tone base)
                 ctx.fillStyle = "#E8C1A8"; 
                 ctx.fillRect(0, 0, 1024, 1024);
 
-                // Calculate a mock "chest" area for the UV map (assuming typical T-pose model mapping)
-                // We'll scale the garment image to fit the torso
-                const imgAspect = image.width / image.height;
-                const targetW = 400;
-                const targetH = targetW / imgAspect;
-                const offsetX = (1024 - targetW) / 2;
-                const offsetY = 300; // Push down to chest area
-
-                ctx.drawImage(image, offsetX, offsetY, targetW, targetH);
+                // Image processing (Local background removal via Chroma Thresholding)
+                if (isUserUpload) {
+                    const tmpCanvas = document.createElement('canvas');
+                    tmpCanvas.width = image.width;
+                    tmpCanvas.height = image.height;
+                    const tCtx = tmpCanvas.getContext('2d');
+                    tCtx.drawImage(image, 0, 0);
+                    const imgData = tCtx.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height);
+                    const data = imgData.data;
+                    for (let i = 0; i < data.length; i += 4) {
+                        // Very bright pixels (white/light bg) -> transparent
+                        if (data[i] > 230 && data[i+1] > 230 && data[i+2] > 230) {
+                            data[i+3] = 0;
+                        }
+                    }
+                    tCtx.putImageData(imgData, 0, 0);
+                    
+                    const imgAspect = tmpCanvas.width / tmpCanvas.height;
+                    const targetW = 450;
+                    const targetH = targetW / imgAspect;
+                    ctx.drawImage(tmpCanvas, (1024 - targetW) / 2, 250, targetW, targetH);
+                } else {
+                    // Pre-processed catalog image
+                    const imgAspect = image.width / image.height;
+                    const targetW = 450;
+                    const targetH = targetW / imgAspect;
+                    ctx.drawImage(image, (1024 - targetW) / 2, 250, targetW, targetH);
+                }
 
                 const texture = new THREE.CanvasTexture(canvas);
-                texture.needsUpdate = true;
-                texture.flipY = false; // Important for GLTF
+                texture.flipY = false; 
                 texture.encoding = THREE.sRGBEncoding;
 
-                // Traverse the model and apply texture to materials
+                // --- SOTA Bump Map Generation (On-the-fly) ---
+                const bumpCanvas = document.createElement('canvas');
+                bumpCanvas.width = 1024;
+                bumpCanvas.height = 1024;
+                const bCtx = bumpCanvas.getContext('2d');
+                bCtx.drawImage(canvas, 0, 0);
+                const bData = bCtx.getImageData(0, 0, 1024, 1024);
+                for (let i = 0; i < bData.data.length; i += 4) {
+                    // Luminance to grayscale for bump
+                    const avg = (bData.data[i] * 0.299 + bData.data[i+1] * 0.587 + bData.data[i+2] * 0.114);
+                    bData.data[i] = avg; bData.data[i+1] = avg; bData.data[i+2] = avg;
+                }
+                bCtx.putImageData(bData, 0, 0);
+                const bumpTexture = new THREE.CanvasTexture(bumpCanvas);
+                bumpTexture.flipY = false;
+
+                // Apply SOTA PBR Material
                 model.traverse(function (child) {
-                    if (child.isMesh) {
-                        if (child.material) {
-                            child.material.map = texture;
-                            child.material.needsUpdate = true;
-                        }
+                    if (child.isMesh && child.material) {
+                        const newMat = new THREE.MeshPhysicalMaterial({
+                            map: texture,
+                            bumpMap: bumpTexture,
+                            bumpScale: 0.03,
+                            roughness: 0.85,    // Fabric is rough
+                            metalness: 0.0,     // Non-metal
+                            clearcoat: 0.05,    // Slight sheen (Fresnel emulation)
+                            clearcoatRoughness: 0.7
+                        });
+                        child.material = newMat;
+                        child.material.needsUpdate = true;
                     }
                 });
             };
-            image.onerror = function() {
-                console.error("Failed to load image for 3D texture:", imageUrl);
-            };
-            
-            // Handle Base64 or external URLs smoothly
-            if (imageUrl.startsWith("data:")) {
-                image.src = imageUrl;
+            image.src = imageUrl;
+        };
+
+        // --- Bridge Export to Social Feed ---
+        window.exportAvatarSnapshot = function() {
+            renderer.render(scene, camera); // force sync render
+            const dataUrl = renderer.domElement.toDataURL('image/png');
+            if (window.AndroidBridge && window.AndroidBridge.onSnapshotReady) {
+                window.AndroidBridge.onSnapshotReady(dataUrl);
             } else {
-                image.src = imageUrl;
+                console.warn("AndroidBridge not found. Cannot export snapshot to KMP.");
             }
         };
 

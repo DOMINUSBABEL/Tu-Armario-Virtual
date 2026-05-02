@@ -36,9 +36,14 @@ import com.myapplication.common.image.ImagePicker
 import com.myapplication.common.ui.theme.*
 import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
+import com.myapplication.common.unity.exportAvatarSnapshot
+import com.myapplication.common.unity.sendTextureTo3DEngine
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
+@OptIn(ExperimentalEncodingApi::class)
 @Composable
 fun MainScreen(
     onNavigateToLeaderboard: () -> Unit,
@@ -231,6 +236,10 @@ fun MainScreen(
                         selectedImageBytes = bytes
                         DatabaseRepository.insertWardrobeItem("Uncategorized", "Unknown", bytes)
                         GameState.addAction("Clothes Uploaded", 15)
+                        
+                        // Send texture to 3D engine for local SOTA rendering
+                        val base64String = "data:image/png;base64," + Base64.encode(bytes)
+                        sendTextureTo3DEngine(base64String, true)
                     }
                 },
                 onPickerClosed = { showImagePicker = false }
