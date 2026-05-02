@@ -31,6 +31,13 @@ object GameState {
             else -> "Top Model"
         }
 
+    val progressToNextLevel: Float
+        get() {
+            val currentLevelPoints = (fashionLevel - 1) * 100
+            val nextLevelPoints = fashionLevel * 100
+            return (stylePoints - currentLevelPoints).toFloat() / 100f
+        }
+
     val rankEmoji: String
         get() = when {
             stylePoints < 500 -> "🥉"

@@ -283,6 +283,8 @@ fun ActionCardGlass(
 
 @Composable
 fun GamificationHeaderGlass() {
+    val progress by animateFloatAsState(targetValue = GameState.progressToNextLevel)
+
     GlassPanel(
         modifier = Modifier
             .fillMaxWidth()
@@ -290,46 +292,73 @@ fun GamificationHeaderGlass() {
         alpha = 0.5f,
         cornerRadius = 24.dp
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(NeonPeach.copy(alpha = 0.2f), RoundedCornerShape(16.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(GameState.rankEmoji, fontSize = 20.sp)
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Lvl ${GameState.fashionLevel} — ${GameState.title}",
+                                style = MaterialTheme.typography.subtitle1,
+                                color = Color.White
+                            )
+                            if (GameState.fashionLevel >= 3) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .background(Brush.linearGradient(listOf(Color(0xFFE0E5EC), Color(0xFFB0B5BC))), RoundedCornerShape(4.dp))
+                                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                                ) {
+                                    Text("DY PRIME", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                }
+                            }
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
+                            Icon(Icons.Filled.Star, contentDescription = "SP", tint = HolographicSilver, modifier = Modifier.size(12.dp))
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text("${GameState.stylePoints} SP", style = MaterialTheme.typography.body2, color = HolographicSilver)
+                        }
+                    }
+                }
+                
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
-                        .background(NeonPeach.copy(alpha = 0.2f), RoundedCornerShape(16.dp)),
-                    contentAlignment = Alignment.Center
+                        .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(20.dp))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    Text(GameState.rankEmoji, fontSize = 20.sp)
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = "Lvl ${GameState.fashionLevel} — ${GameState.title}",
-                        style = MaterialTheme.typography.subtitle1,
-                        color = Color.White
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
-                        Icon(Icons.Filled.Star, contentDescription = "SP", tint = HolographicSilver, modifier = Modifier.size(12.dp))
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text("${GameState.stylePoints} SP", style = MaterialTheme.typography.body2, color = HolographicSilver)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Filled.ThumbUp, contentDescription = "Coins", tint = NeonPeach, modifier = Modifier.size(14.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("${GameState.dyCoins}", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
             
-            Box(
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Progress Bar
+            LinearProgressIndicator(
+                progress = progress,
                 modifier = Modifier
-                    .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(20.dp))
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.ThumbUp, contentDescription = "Coins", tint = NeonPeach, modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("${GameState.dyCoins}", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                }
-            }
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp)),
+                color = NeonPeach,
+                backgroundColor = Color.White.copy(alpha = 0.1f)
+            )
         }
     }
 }
