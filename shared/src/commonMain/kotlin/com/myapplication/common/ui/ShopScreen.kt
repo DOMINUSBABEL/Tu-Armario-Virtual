@@ -31,10 +31,10 @@ import com.myapplication.common.ui.components.UnityViewPlaceholder
 @Composable
 fun ShopScreen(onNavigateBack: () -> Unit) {
     val mockShopItems = listOf(
-        ShopItem("1", "Cyberpunk Jacket", "Temu", 15.99, "https://temu.com/mock"),
-        ShopItem("2", "Y2K Cargo Pants", "Shein", 22.50, "https://shein.com/mock"),
-        ShopItem("3", "Neon Tech Vest", "Temu", 18.00, "https://temu.com/mock"),
-        ShopItem("4", "Minimalist Turtleneck", "Shein", 12.99, "https://shein.com/mock")
+        ShopItem("1", "Chaqueta De Cuero Mujer Biker", "Vélez", 999900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
+        ShopItem("2", "Bolso Manos Libres De Cuero", "Vélez", 359900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
+        ShopItem("3", "Botines De Cuero Tacón", "Vélez", 459900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
+        ShopItem("4", "Cinturón De Cuero Grabado", "Vélez", 149900.0, "https://www.velez.com.co/lo-nuevo/mujer")
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
