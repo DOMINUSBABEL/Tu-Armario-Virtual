@@ -1,9 +1,12 @@
 package com.myapplication.common.unity
 
+import com.myapplication.common.gamification.GameState
+
 actual fun sendTextureTo3DEngine(textureData: String, isUserUpload: Boolean) {
-    println("iOS: Sending texture to 3D engine ignored (Stub).")
+    GameState.currentGarmentUrl = textureData
 }
 
 actual fun exportAvatarSnapshot() {
-    println("iOS: Export snapshot ignored (Stub).")
+    GameState.lastSnapshot = GameState.currentGarmentUrl
+    GameState.isSnapshotReady = true
 }

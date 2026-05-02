@@ -7,6 +7,11 @@ import androidx.compose.runtime.setValue
 object GameState {
     var isSnapshotReady by mutableStateOf(false)
     var lastSnapshot by mutableStateOf<String?>(null)
+    
+    // Avatar Display State
+    var is3DMode by mutableStateOf(true)
+    var avatar2DStyle by mutableStateOf("Default") // "Default", "Anime", "Pixel Art", "Vintage"
+    var currentGarmentUrl by mutableStateOf<String?>(null)
 
     var stylePoints by mutableStateOf(0)
         private set

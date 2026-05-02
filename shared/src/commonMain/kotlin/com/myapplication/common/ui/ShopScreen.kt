@@ -47,8 +47,8 @@ fun ShopScreen(onNavigateBack: () -> Unit) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Orgánico (Unity 3D Avatar en pose "Mirror")
-        UnityViewPlaceholder()
+        // 1. Fondo Orgánico (Smart Avatar Engine 3D/2D)
+        com.myapplication.common.ui.components.SmartAvatarView()
 
         // 2. Capa Flotante de UI
         Scaffold(

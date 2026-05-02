@@ -61,8 +61,8 @@ fun SocialFeedScreen(onNavigateBack: () -> Unit) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Orgánico (Unity 3D Avatar mostrando el feed)
-        UnityViewPlaceholder()
+        // 1. Fondo Orgánico (Smart Avatar Engine 3D/2D mostrando el feed)
+        com.myapplication.common.ui.components.SmartAvatarView()
 
         // 2. Capa Flotante de UI
         Scaffold(
