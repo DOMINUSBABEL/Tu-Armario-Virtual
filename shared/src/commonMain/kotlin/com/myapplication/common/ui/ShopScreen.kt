@@ -106,7 +106,9 @@ fun ShopItemCardGlass(item: ShopItem) {
             .fillMaxWidth()
             .height(240.dp)
             .clickable { 
-                sendTextureTo3DEngine(item.image)
+                // The WebViewAssetLoader expects https://appassets.androidplatform.net/assets/ for local assets
+                val webViewUrl = item.image.replace("file:///android_asset/", "https://appassets.androidplatform.net/assets/")
+                sendTextureTo3DEngine(webViewUrl)
             },
         alpha = 0.7f,
         cornerRadius = 16.dp
