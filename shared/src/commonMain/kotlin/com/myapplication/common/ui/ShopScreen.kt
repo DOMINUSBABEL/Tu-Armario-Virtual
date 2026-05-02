@@ -25,33 +25,13 @@ import com.myapplication.common.ui.components.UnityViewPlaceholder
 
 @Composable
 fun ShopScreen(onNavigateBack: () -> Unit) {
-    val mockShopItems = listOf(
-        // Vélez
-        ShopItem("1", "Chaqueta De Cuero Mujer Biker", "Vélez", 999900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
-        ShopItem("2", "Bolso Manos Libres De Cuero", "Vélez", 359900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
-        ShopItem("3", "Botines De Cuero Tacón", "Vélez", 459900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
-        ShopItem("4", "Cinturón De Cuero Grabado", "Vélez", 149900.0, "https://www.velez.com.co/lo-nuevo/mujer"),
-        
-        // Arturo Calle
-        ShopItem("5", "Blusa Cuello V Manga Sisa", "Arturo Calle", 89900.0, "https://www.arturocalle.com/"),
-        ShopItem("6", "Pantalón Dril Fondo Entero", "Arturo Calle", 129900.0, "https://www.arturocalle.com/"),
-        ShopItem("7", "Chaqueta En Denim Básica", "Arturo Calle", 189900.0, "https://www.arturocalle.com/"),
-        ShopItem("8", "Vestido Largo Estampado", "Arturo Calle", 159900.0, "https://www.arturocalle.com/"),
-        
-        // True
-        ShopItem("9", "Camiseta Oversize True Logo", "TRUE", 85000.0, "https://trueshop.co/"),
-        ShopItem("10", "Pantalón Parachute Cargo", "TRUE", 210000.0, "https://trueshop.co/"),
-        ShopItem("11", "Hoodie Básica True", "TRUE", 175000.0, "https://trueshop.co/"),
-        ShopItem("12", "Falda Midi Cargo", "TRUE", 145000.0, "https://trueshop.co/")
-    )
-
     var selectedBrand by remember { mutableStateOf("All") }
     val brands = listOf("All", "Vélez", "Arturo Calle", "TRUE")
 
     val filteredItems = if (selectedBrand == "All") {
-        mockShopItems
+        com.myapplication.common.data.CatalogData.fullCatalog
     } else {
-        mockShopItems.filter { it.store == selectedBrand }
+        com.myapplication.common.data.CatalogData.fullCatalog.filter { it.store == selectedBrand }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
