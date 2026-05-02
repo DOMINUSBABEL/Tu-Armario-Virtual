@@ -13,6 +13,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -162,6 +164,30 @@ fun ShopItemCardGlass(item: ShopItem, onOpenUrl: (String) -> Unit) {
                     contentDescription = item.name,
                     modifier = Modifier.fillMaxSize()
                 )
+                
+                // Add to Wardrobe Button
+                var isSaved by remember { mutableStateOf(false) }
+                IconButton(
+                    onClick = { 
+                        isSaved = !isSaved 
+                        if (isSaved) {
+                            // Insert into local DB
+                            com.myapplication.common.db.DatabaseRepository.insertWardrobeItem(item.store, item.name, ByteArray(0))
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
+                        .size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isSaved) Icons.Filled.Favorite else Icons.Filled.Add,
+                        contentDescription = "Save to Wardrobe",
+                        tint = if (isSaved) MaterialTheme.colors.primary else Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
 
             // Details
