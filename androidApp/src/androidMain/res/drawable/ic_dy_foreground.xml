@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Outer Polygonal Hexagon/Diamond Shape (Holographic Silver) -->
+    <path
+        android:strokeColor="#E0E5EC"
+        android:strokeWidth="2"
+        android:pathData="M54,16 L88,36 L88,72 L54,92 L20,72 L20,36 Z" />
+        
+    <!-- Stylized Hanger / Mannequin Top (Neon Peach) -->
+    <path
+        android:strokeColor="#FF7A9A"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M54,26 C46,26 46,38 54,42 C54,42 54,46 54,46" />
+        
+    <path
+        android:strokeColor="#FF7A9A"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M54,46 L28,62 M54,46 L80,62 M28,62 L80,62" />
+
+</vector>

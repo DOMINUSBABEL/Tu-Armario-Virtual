@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.myapplication.common.navigation.AppScreen
+import com.myapplication.common.ui.SplashScreen
 import com.myapplication.common.ui.LoginScreen
 import com.myapplication.common.ui.TutorialScreen
 import com.myapplication.common.ui.MainScreen
@@ -18,9 +19,10 @@ import com.myapplication.common.ui.theme.AppTheme
 @Composable
 fun App() {
     AppTheme {
-        var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Login) }
+        var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Splash) }
 
         when (val screen = currentScreen) {
+            is AppScreen.Splash -> SplashScreen(onNavigateNext = { currentScreen = AppScreen.Login })
             is AppScreen.Login -> LoginScreen(onNavigateToTutorial = { currentScreen = AppScreen.Tutorial })
             is AppScreen.Tutorial -> TutorialScreen(onNavigateToMain = { currentScreen = AppScreen.Main })
             is AppScreen.Main -> MainScreen(
