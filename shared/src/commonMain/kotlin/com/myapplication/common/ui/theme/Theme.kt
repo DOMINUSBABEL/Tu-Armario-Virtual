@@ -10,14 +10,14 @@ import androidx.compose.ui.unit.dp
 
 val AppShapes = Shapes(
     small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp)
+    medium = RoundedCornerShape(20.dp), // Slightly more rounded for organic feel
+    large = RoundedCornerShape(28.dp)
 )
 
 private val DarkColorPalette = darkColors(
     primary = NeonPeach,
-    primaryVariant = NeonPeach,
-    secondary = HolographicSilver,
+    primaryVariant = DeepPurple, // Synthwave deep purple for variants
+    secondary = ElectricCyan,    // Electric cyan for secondary interactive elements
     secondaryVariant = HolographicSilver,
     background = OnyxBlack,
     surface = SurfaceDark,
