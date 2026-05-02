@@ -2,14 +2,14 @@ package com.myapplication.common.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val BackgroundWhite = Color(0xFFFAFAFA)
-val PrimaryDarkPurple = Color(0xFF2A1B38)
-val AccentMagenta = Color(0xFFD81B60)
-val CardPalePink = Color(0xFFFDF2F8)
+val OnyxBlack = Color(0xFF0F0F13)
+val NeonPeach = Color(0xFFFF7A9A)
+val HolographicSilver = Color(0xFFE0E5EC)
+val CardDark = Color(0xFF1C1C1E)
 
-val TextPrimary = PrimaryDarkPurple
-val TextSecondary = Color(0xFF757575)
+val TextPrimary = Color.White
+val TextSecondary = HolographicSilver
 
-val White = Color(0xFFFFFFFF)
-val SurfaceLight = Color(0xFFFFFFFF)
-val OutlineLight = Color(0xFFE0E0E0)
+val White = Color.White
+val SurfaceDark = Color(0xFF151518)
+val OutlineDark = Color(0xFF2A2A2E)

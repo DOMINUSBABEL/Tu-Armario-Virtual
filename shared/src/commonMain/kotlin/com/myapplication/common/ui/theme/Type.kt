@@ -1,6 +1,7 @@
 package com.myapplication.common.ui.theme
 
 import androidx.compose.material.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -13,21 +14,21 @@ val AppTypography = Typography(
     h1 = TextStyle(
         fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
+        fontSize = 36.sp,
         letterSpacing = (-0.5).sp,
         color = TextPrimary
     ),
     h2 = TextStyle(
         fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
+        fontSize = 28.sp,
         letterSpacing = 0.sp,
         color = TextPrimary
     ),
     h3 = TextStyle(
         fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
+        fontSize = 22.sp,
         letterSpacing = 0.sp,
         color = TextPrimary
     ),
@@ -41,7 +42,7 @@ val AppTypography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontSize = 15.sp,
         letterSpacing = 0.25.sp,
         color = TextPrimary
     ),
@@ -54,10 +55,10 @@ val AppTypography = Typography(
     ),
     button = TextStyle(
         fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
         letterSpacing = 1.25.sp,
-        color = White
+        color = Color.Black // Because buttons are Neon Peach
     ),
     caption = TextStyle(
         fontFamily = FontFamily.SansSerif,
@@ -71,6 +72,6 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 10.sp,
         letterSpacing = 1.5.sp,
-        color = AccentMagenta
+        color = NeonPeach
     )
 )

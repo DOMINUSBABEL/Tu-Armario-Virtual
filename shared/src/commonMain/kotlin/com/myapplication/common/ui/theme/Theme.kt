@@ -3,7 +3,7 @@ package com.myapplication.common.ui.theme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.lightColors
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -14,25 +14,25 @@ val AppShapes = Shapes(
     large = RoundedCornerShape(24.dp)
 )
 
-private val LightColorPalette = lightColors(
-    primary = PrimaryDarkPurple,
-    primaryVariant = PrimaryDarkPurple,
-    secondary = AccentMagenta,
-    secondaryVariant = AccentMagenta,
-    background = BackgroundWhite,
-    surface = SurfaceLight,
-    error = Color(0xFFB00020),
-    onPrimary = White,
-    onSecondary = White,
+private val DarkColorPalette = darkColors(
+    primary = NeonPeach,
+    primaryVariant = NeonPeach,
+    secondary = HolographicSilver,
+    secondaryVariant = HolographicSilver,
+    background = OnyxBlack,
+    surface = SurfaceDark,
+    error = Color(0xFFCF6679),
+    onPrimary = Color.Black,
+    onSecondary = Color.Black,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
-    onError = White
+    onError = Color.Black
 )
 
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colors = LightColorPalette,
+        colors = DarkColorPalette,
         typography = AppTypography,
         shapes = AppShapes,
         content = content
