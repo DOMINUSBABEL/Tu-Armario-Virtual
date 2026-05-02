@@ -5,8 +5,9 @@ sealed class AppScreen {
     object Tutorial : AppScreen()
     object Main : AppScreen()
     object Leaderboard : AppScreen()
-    object Wardrobe : AppScreen()
-    object Shop : AppScreen()
-    object Runway : AppScreen()
+    data object Wardrobe : AppScreen()
+    data object Shop : AppScreen()
+    data object Runway : AppScreen()
     data class RunwayShowcase(val outfitDescription: String, val theme: String) : AppScreen()
-}
+    data object SocialFeed : AppScreen()
+    }

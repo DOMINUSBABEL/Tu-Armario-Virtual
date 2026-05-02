@@ -41,7 +41,8 @@ fun MainScreen(
     onNavigateToLeaderboard: () -> Unit,
     onNavigateToWardrobe: () -> Unit,
     onNavigateToRunway: () -> Unit,
-    onNavigateToShop: () -> Unit
+    onNavigateToShop: () -> Unit,
+    onNavigateToSocialFeed: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var showImagePicker by remember { mutableStateOf(false) }
@@ -82,6 +83,12 @@ fun MainScreen(
                     label = { },
                     selected = false,
                     onClick = { showImagePicker = true }
+                )
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Filled.Face, contentDescription = "Social Feed", tint = Color.LightGray) },
+                    label = { Text("Feed", color = Color.LightGray, fontSize = 10.sp) },
+                    selected = false,
+                    onClick = onNavigateToSocialFeed
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Shop", tint = Color.LightGray) },
@@ -128,6 +135,14 @@ fun MainScreen(
                 ) {
                     item {
                         ActionCardMini(
+                            title = "Feed",
+                            icon = Icons.Filled.Face,
+                            color = MaterialTheme.colors.secondary,
+                            onClick = onNavigateToSocialFeed
+                        )
+                    }
+                    item {
+                        ActionCardMini(
                             title = "Wardrobe",
                             icon = Icons.AutoMirrored.Filled.List,
                             color = MaterialTheme.colors.primary,
@@ -153,7 +168,7 @@ fun MainScreen(
                     item {
                         ActionCardMini(
                             title = "Scan",
-                            icon = Icons.Filled.Face,
+                            icon = Icons.Filled.Add,
                             color = MaterialTheme.colors.primary,
                             onClick = { showImagePicker = true }
                         )

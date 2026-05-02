@@ -12,6 +12,7 @@ import com.myapplication.common.ui.WardrobeScreen
 import com.myapplication.common.ui.ShopScreen
 import com.myapplication.common.ui.RunwayScreen
 import com.myapplication.common.ui.RunwayShowcaseScreen
+import com.myapplication.common.social.SocialFeedScreen
 import com.myapplication.common.ui.theme.AppTheme
 
 @Composable
@@ -26,7 +27,8 @@ fun App() {
                 onNavigateToLeaderboard = { currentScreen = AppScreen.Leaderboard },
                 onNavigateToWardrobe = { currentScreen = AppScreen.Wardrobe },
                 onNavigateToRunway = { currentScreen = AppScreen.Runway },
-                onNavigateToShop = { currentScreen = AppScreen.Shop }
+                onNavigateToShop = { currentScreen = AppScreen.Shop },
+                onNavigateToSocialFeed = { currentScreen = AppScreen.SocialFeed }
             )
             is AppScreen.Leaderboard -> LeaderboardScreen(onNavigateBack = { currentScreen = AppScreen.Main })
             is AppScreen.Wardrobe -> WardrobeScreen(onNavigateBack = { currentScreen = AppScreen.Main })
@@ -40,6 +42,7 @@ fun App() {
                 theme = screen.theme,
                 onNavigateBack = { currentScreen = AppScreen.Main }
             )
+            is AppScreen.SocialFeed -> SocialFeedScreen(onNavigateBack = { currentScreen = AppScreen.Main })
         }
     }
 }
