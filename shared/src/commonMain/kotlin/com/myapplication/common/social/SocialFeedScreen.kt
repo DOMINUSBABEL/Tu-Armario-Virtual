@@ -21,42 +21,55 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.myapplication.common.ui.components.GlassPanel
+import com.myapplication.common.ui.components.UnityViewPlaceholder
 
 @Composable
 fun SocialFeedScreen(onNavigateBack: () -> Unit) {
     val mockPosts = remember {
         listOf(
-            PostData("1", "Cyberpunk Neon Nights", "user_123", listOf("Cyberpunk", "Neon")),
-            PostData("2", "Minimalist Elegance", "fashion_guru", listOf("Minimalist", "Elegant")),
-            PostData("3", "Y2K Throwback Outfit", "retro_lover", listOf("Y2K", "Vintage"))
+            PostData("1", "Cyberpunk Neon Nights", "user_123", listOf("Cyberpunk", "Neon", "Temu")),
+            PostData("2", "Minimalist Elegance", "fashion_guru", listOf("Minimalist", "Elegant", "Shein")),
+            PostData("3", "Y2K Throwback Outfit", "retro_lover", listOf("Y2K", "Vintage", "Thrifted"))
         )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Fashion Feed") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                backgroundColor = Color.Transparent,
-                elevation = 0.dp
-            )
-        }
-    ) { innerPadding ->
-        // Using LazyColumn to simulate a Vertical Pager (Snap behavior is more complex in common KMP without custom modifiers, but this serves the feed purpose)
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Color(0xFF0F0F13)), // Onyx Black
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(bottom = 80.dp)
-        ) {
-            items(mockPosts) { post ->
-                FeedItem(post)
+    Box(modifier = Modifier.fillMaxSize()) {
+        // 1. Fondo Orgánico (Unity 3D Avatar mostrando el feed)
+        UnityViewPlaceholder()
+
+        // 2. Capa Flotante de UI
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            topBar = {
+                GlassPanel(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                    alpha = 0.5f,
+                    cornerRadius = 24.dp
+                ) {
+                    TopAppBar(
+                        title = { Text("Fashion Feed", style = MaterialTheme.typography.h3, color = Color.White) },
+                        navigationIcon = {
+                            IconButton(onClick = onNavigateBack) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                            }
+                        },
+                        backgroundColor = Color.Transparent,
+                        elevation = 0.dp
+                    )
+                }
+            }
+        ) { innerPadding ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(bottom = 80.dp, top = 8.dp)
+            ) {
+                items(mockPosts) { post ->
+                    FeedItemGlass(post)
+                }
             }
         }
     }
@@ -65,68 +78,76 @@ fun SocialFeedScreen(onNavigateBack: () -> Unit) {
 data class PostData(val id: String, val title: String, val author: String, val tags: List<String>)
 
 @Composable
-fun FeedItem(post: PostData) {
+fun FeedItemGlass(post: PostData) {
     var isLiked by remember { mutableStateOf(false) }
 
-    Box(
+    GlassPanel(
         modifier = Modifier
             .fillMaxWidth()
-            .height(600.dp)
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.DarkGray)
+            .height(550.dp)
+            .padding(horizontal = 16.dp),
+        alpha = 0.3f, // Very transparent to let the 3D background shine through
+        cornerRadius = 24.dp
     ) {
-        // Mock image/video background
-        Box(modifier = Modifier.fillMaxSize().background(Color.Gray.copy(alpha = 0.3f)))
-
-        // Glassmorphism info panel
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .background(Color.Black.copy(alpha = 0.5f)) // Simulated glass blur
-                .padding(16.dp)
-        ) {
-            Text(post.title, style = MaterialTheme.typography.h6, color = Color.White, fontWeight = FontWeight.Bold)
-            Text("@${post.author}", style = MaterialTheme.typography.body2, color = Color(0xFFE0E5EC)) // Holographic Silver
+        Box(modifier = Modifier.fillMaxSize()) {
             
-            Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                post.tags.forEach { tag ->
-                    Box(modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(Color(0xFFFF7A9A).copy(alpha = 0.2f)).padding(horizontal = 8.dp, vertical = 4.dp)) {
-                        Text("#$tag", color = Color(0xFFFF7A9A), style = MaterialTheme.typography.caption) // Neon Peach
+            // Invisible touch area to view the 3D model cleanly
+            Box(modifier = Modifier.fillMaxSize().clickable { /* Hide UI to focus on 3D Model */ })
+
+            // Glassmorphism info panel
+            GlassPanel(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                alpha = 0.7f,
+                cornerRadius = 16.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(post.title, style = MaterialTheme.typography.h6, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("@${post.author}", style = MaterialTheme.typography.body2, color = MaterialTheme.colors.secondary)
+                    
+                    Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        post.tags.forEach { tag ->
+                            Box(modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colors.primary.copy(alpha = 0.2f)).padding(horizontal = 8.dp, vertical = 4.dp)) {
+                                Text("#$tag", color = MaterialTheme.colors.primary, style = MaterialTheme.typography.caption)
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        // Actions
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 32.dp, end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            IconButton(
-                onClick = { isLiked = !isLiked },
-                modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.4f))
+            // Actions
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 32.dp, end = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "Like",
-                    tint = if (isLiked) Color(0xFFFF7A9A) else Color.White
-                )
-            }
-            IconButton(
-                onClick = { /* Share */ },
-                modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.4f))
-            ) {
-                Icon(Icons.Filled.Share, contentDescription = "Share", tint = Color.White)
-            }
-            IconButton(
-                onClick = { /* Add to wardrobe */ },
-                modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.4f))
-            ) {
-                Icon(Icons.Filled.ShoppingCart, contentDescription = "Add to Wardrobe", tint = Color.White)
+                IconButton(
+                    onClick = { isLiked = !isLiked },
+                    modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.6f))
+                ) {
+                    Icon(
+                        imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = "Like",
+                        tint = if (isLiked) MaterialTheme.colors.primary else Color.White
+                    )
+                }
+                IconButton(
+                    onClick = { /* Share */ },
+                    modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.6f))
+                ) {
+                    Icon(Icons.Filled.Share, contentDescription = "Share", tint = Color.White)
+                }
+                IconButton(
+                    onClick = { /* Add to wardrobe or Buy from E-commerce */ },
+                    modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.6f))
+                ) {
+                    Icon(Icons.Filled.ShoppingCart, contentDescription = "Get Outfit", tint = Color.White)
+                }
             }
         }
     }
