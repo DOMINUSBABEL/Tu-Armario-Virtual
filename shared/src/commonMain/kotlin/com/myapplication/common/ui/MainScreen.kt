@@ -38,6 +38,8 @@ import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
 import com.myapplication.common.unity.exportAvatarSnapshot
 import com.myapplication.common.unity.sendTextureTo3DEngine
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.io.encoding.Base64
@@ -255,11 +257,20 @@ fun ActionCardGlass(
     color: Color,
     onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.90f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
+    )
+
     GlassPanel(
         modifier = Modifier
             .width(100.dp)
             .height(110.dp)
-            .clickable(onClick = onClick),
+            .scale(scale)
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         alpha = 0.5f
     ) {
         Column(

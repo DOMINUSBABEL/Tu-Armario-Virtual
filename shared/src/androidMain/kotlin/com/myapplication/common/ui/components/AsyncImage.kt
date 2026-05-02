@@ -1,13 +1,15 @@
 package com.myapplication.common.ui.components
 
 import android.graphics.BitmapFactory
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -17,6 +19,27 @@ import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 import java.io.InputStream
+
+@Composable
+fun ShimmerAnimation(modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition()
+    val translateAnim by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+
+    val brush = Brush.linearGradient(
+        colors = listOf(Color.LightGray.copy(alpha = 0.2f), Color.White.copy(alpha = 0.5f), Color.LightGray.copy(alpha = 0.2f)),
+        start = Offset.Zero,
+        end = Offset(x = translateAnim, y = translateAnim)
+    )
+
+    Box(modifier = modifier.background(brush))
+}
 
 @Composable
 actual fun AsyncImage(url: String, contentDescription: String, modifier: Modifier) {
@@ -60,7 +83,7 @@ actual fun AsyncImage(url: String, contentDescription: String, modifier: Modifie
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {
-                CircularProgressIndicator(color = Color(0xFFE0E5EC))
+                ShimmerAnimation(modifier = Modifier.matchParentSize())
             } else {
                 androidx.compose.material.Text("No Image", color = Color.LightGray)
             }
