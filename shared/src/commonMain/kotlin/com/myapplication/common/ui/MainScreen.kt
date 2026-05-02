@@ -36,6 +36,7 @@ import com.myapplication.common.image.ImagePicker
 import com.myapplication.common.ui.theme.*
 import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
+import com.myapplication.common.ui.components.bouncingClickable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -57,8 +58,13 @@ fun MainScreen(
         // 1. Fondo Orgánico (Unity 3D Avatar)
         UnityViewPlaceholder()
 
+        val backgroundGradient = Brush.verticalGradient(
+            colors = listOf(Color.Transparent, DeepPurple.copy(alpha = 0.15f), OnyxBlack.copy(alpha = 0.8f))
+        )
+
         // 2. Capa Flotante de UI (Transparente)
         Scaffold(
+            modifier = Modifier.background(backgroundGradient),
             backgroundColor = Color.Transparent,
             bottomBar = {
                 BottomNavigation(
@@ -250,7 +256,7 @@ fun ActionCardGlass(
         modifier = Modifier
             .width(100.dp)
             .height(110.dp)
-            .clickable(onClick = onClick),
+            .bouncingClickable(onClick = onClick),
         alpha = 0.5f
     ) {
         Column(

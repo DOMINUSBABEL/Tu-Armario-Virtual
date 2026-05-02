@@ -10,6 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.myapplication.common.api.OllamaClient
 import com.myapplication.common.db.DatabaseRepository
+import com.myapplication.common.ui.components.GlassPanel
+import com.myapplication.common.ui.components.bouncingClickable
+import com.myapplication.common.ui.theme.DeepPurple
+import com.myapplication.common.ui.theme.ElectricCyan
+import com.myapplication.common.ui.theme.NeonPeach
+import com.myapplication.common.ui.theme.OnyxBlack
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -27,30 +38,47 @@ fun RunwayScreen(
     val coroutineScope = rememberCoroutineScope()
     val ollamaClient = remember { OllamaClient() }
 
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(OnyxBlack, DeepPurple.copy(alpha = 0.2f), OnyxBlack)
+    )
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxSize().background(backgroundGradient).padding(16.dp).verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Runway", style = MaterialTheme.typography.h4)
-            Button(onClick = onNavigateBack) {
-                Text("Back")
+            IconButton(onClick = onNavigateBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
             }
+            Text("Runway Challenge", style = MaterialTheme.typography.h2)
+            Spacer(modifier = Modifier.width(48.dp)) // balance
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Text("Daily Theme:", style = MaterialTheme.typography.h6)
-        Text(activeTheme, style = MaterialTheme.typography.h3, color = MaterialTheme.colors.primary)
+        GlassPanel(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+            Column(
+                modifier = Modifier.padding(24.dp).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Current Theme", style = MaterialTheme.typography.subtitle1, color = ElectricCyan)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(activeTheme, style = MaterialTheme.typography.h1, color = NeonPeach)
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = { activeTheme = themes.random() }) {
-            Text("Reroll Theme")
+                OutlinedButton(
+                    onClick = { activeTheme = themes.random() },
+                    modifier = Modifier.bouncingClickable(onClick = { activeTheme = themes.random() }),
+                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Transparent)
+                ) {
+                    Text("REROLL THEME", color = Color.White)
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -78,36 +106,43 @@ fun RunwayScreen(
                 }
             },
             enabled = !isLoading,
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+            modifier = Modifier.fillMaxWidth().height(56.dp).bouncingClickable(enabled = !isLoading, onClick = {})
         ) {
-            Text(if (isLoading) "Generating Outfit..." else "Generate Outfit for Theme")
+            Text(if (isLoading) "GENERATING OUTFIT..." else "GENERATE OUTFIT", color = Color.Black)
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         if (isLoading) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = ElectricCyan)
         }
 
         if (aiSuggestion.isNotEmpty()) {
-            Text(
-                text = "Runway AI Suggestion:",
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.align(Alignment.Start)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = aiSuggestion,
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { onNavigateToShowcase(aiSuggestion, activeTheme) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Enter the Runway!", color = androidx.compose.ui.graphics.Color.White)
+            GlassPanel(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(24.dp)) {
+                    Text(
+                        text = "AI Suggestion",
+                        style = MaterialTheme.typography.subtitle1,
+                        color = ElectricCyan
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = aiSuggestion,
+                        style = MaterialTheme.typography.body1,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Button(
+                        onClick = { onNavigateToShowcase(aiSuggestion, activeTheme) },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = NeonPeach),
+                        modifier = Modifier.fillMaxWidth().height(50.dp).bouncingClickable(onClick = {
+                            onNavigateToShowcase(aiSuggestion, activeTheme)
+                        })
+                    ) {
+                        Text("ENTER THE RUNWAY", color = Color.Black)
+                    }
+                }
             }
         }
     }

@@ -15,6 +15,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.myapplication.common.gamification.GameState
+import com.myapplication.common.ui.components.GlassPanel
+import com.myapplication.common.ui.theme.DeepPurple
+import com.myapplication.common.ui.theme.ElectricCyan
+import com.myapplication.common.ui.theme.NeonGold
+import com.myapplication.common.ui.theme.NeonPeach
+import com.myapplication.common.ui.theme.OnyxBlack
+import androidx.compose.ui.graphics.Brush
 
 data class RankEntry(val rank: Int, val name: String, val points: Int, val isCurrentUser: Boolean = false)
 
@@ -33,59 +40,75 @@ fun LeaderboardScreen(onNavigateBack: () -> Unit) {
         RankEntry(7, "Style Newbie", 50)
     ).sortedByDescending { it.points }.mapIndexed { index, entry -> entry.copy(rank = index + 1) }
 
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(OnyxBlack, DeepPurple.copy(alpha = 0.2f), OnyxBlack)
+    )
+
     Scaffold(
+        modifier = Modifier.background(backgroundGradient),
+        backgroundColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Rankings & Badges") },
+                title = { Text("Rankings & Badges", style = MaterialTheme.typography.h3, color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
-                }
+                },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp
             )
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+            modifier = Modifier.fillMaxSize().background(backgroundGradient).padding(paddingValues).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Badges Section
-            Text("Your Badges", style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            val badges = GameState.unlockedBadges
-            if (badges.isEmpty()) {
-                Text("Complete actions to earn badges!", color = Color.Gray)
-            } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    badges.forEach { badge ->
-                        Surface(
-                            modifier = Modifier.padding(4.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colors.secondary.copy(alpha = 0.2f)
-                        ) {
-                            Text(badge, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+            Text("Your Badges", style = MaterialTheme.typography.h3, color = NeonPeach)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            GlassPanel(modifier = Modifier.fillMaxWidth(), cornerRadius = 24.dp) {
+                val badges = GameState.unlockedBadges
+                if (badges.isEmpty()) {
+                    Text(
+                        "Complete actions to earn badges!",
+                        color = Color.White.copy(alpha = 0.6f),
+                        modifier = Modifier.padding(24.dp)
+                    )
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        badges.forEach { badge ->
+                            Surface(
+                                modifier = Modifier.padding(4.dp),
+                                shape = RoundedCornerShape(16.dp),
+                                color = DeepPurple.copy(alpha = 0.4f)
+                            ) {
+                                Text(badge, modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), color = Color.White)
+                            }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            Divider()
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Leaderboard Section
-            Text("Global Leaderboard", style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
+            Text("Global Leaderboard", style = MaterialTheme.typography.h3, color = ElectricCyan)
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(allEntries) { entry ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        backgroundColor = if (entry.isCurrentUser) MaterialTheme.colors.primary.copy(alpha = 0.1f) else MaterialTheme.colors.surface,
-                        elevation = if (entry.isCurrentUser) 4.dp else 1.dp
+                    val isTop3 = entry.rank <= 3
+                    val rankColor = if (isTop3) NeonGold else Color.White.copy(alpha = 0.5f)
+
+                    GlassPanel(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                        alpha = if (entry.isCurrentUser) 0.8f else 0.4f,
+                        cornerRadius = 16.dp
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),
@@ -95,17 +118,22 @@ fun LeaderboardScreen(onNavigateBack: () -> Unit) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "#${entry.rank}",
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.width(40.dp),
-                                    color = if (entry.rank <= 3) Color(0xFFFFD700) else Color.Gray
+                                    style = MaterialTheme.typography.h3,
+                                    modifier = Modifier.width(48.dp),
+                                    color = rankColor
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     text = entry.name,
-                                    fontWeight = if (entry.isCurrentUser) FontWeight.Bold else FontWeight.Normal
+                                    style = MaterialTheme.typography.subtitle1,
+                                    color = if (entry.isCurrentUser) NeonPeach else Color.White
                                 )
                             }
-                            Text("${entry.points} SP", fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "${entry.points} SP",
+                                style = MaterialTheme.typography.h3,
+                                color = if (entry.isCurrentUser) NeonPeach else ElectricCyan
+                            )
                         }
                     }
                 }

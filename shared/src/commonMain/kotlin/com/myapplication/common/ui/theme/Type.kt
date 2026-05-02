@@ -7,42 +7,42 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// In a real app, load Playfair Display and Inter fonts here.
-// For Compose Multiplatform defaults, we use Serif for headings, SansSerif for body.
+// Using Compose Multiplatform defaults, but applying ExtraBold and heavier weights
+// for a "Comfortable Disruption" and "Neon Cyber Glam" aesthetic.
 
 val AppTypography = Typography(
     h1 = TextStyle(
         fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 36.sp,
-        letterSpacing = (-0.5).sp,
+        fontWeight = FontWeight.ExtraBold, // Impactful headers
+        fontSize = 40.sp,
+        letterSpacing = (-1.0).sp,
         color = TextPrimary
     ),
     h2 = TextStyle(
         fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
-        letterSpacing = 0.sp,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 32.sp,
+        letterSpacing = (-0.5).sp,
         color = TextPrimary
     ),
     h3 = TextStyle(
         fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 26.sp,
         letterSpacing = 0.sp,
         color = TextPrimary
     ),
     subtitle1 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         letterSpacing = 0.15.sp,
         color = TextPrimary
     ),
     body1 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Normal,
-        fontSize = 15.sp,
+        fontSize = 16.sp,
         letterSpacing = 0.25.sp,
         color = TextPrimary
     ),
@@ -55,10 +55,10 @@ val AppTypography = Typography(
     ),
     button = TextStyle(
         fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 15.sp,
         letterSpacing = 1.25.sp,
-        color = Color.Black // Because buttons are Neon Peach
+        color = Color.Black // Contrast for bright neon buttons
     ),
     caption = TextStyle(
         fontFamily = FontFamily.SansSerif,
@@ -70,8 +70,8 @@ val AppTypography = Typography(
     overline = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
-        fontSize = 10.sp,
+        fontSize = 11.sp,
         letterSpacing = 1.5.sp,
-        color = NeonPeach
+        color = ElectricCyan // Switched to ElectricCyan for cyberpunk accents
     )
 )

@@ -20,6 +20,11 @@ import com.myapplication.common.model.WardrobeItem
 import com.myapplication.common.image.BatchImagePicker
 import com.myapplication.common.ui.components.GlassPanel
 import com.myapplication.common.ui.components.UnityViewPlaceholder
+import com.myapplication.common.ui.components.bouncingClickable
+import com.myapplication.common.ui.theme.DeepPurple
+import com.myapplication.common.ui.theme.ElectricCyan
+import com.myapplication.common.ui.theme.OnyxBlack
+import androidx.compose.ui.graphics.Brush
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -43,8 +48,13 @@ fun WardrobeScreen(onNavigateBack: () -> Unit) {
         // 1. Fondo Orgánico (Unity 3D Avatar)
         UnityViewPlaceholder()
 
+        val backgroundGradient = Brush.verticalGradient(
+            colors = listOf(Color.Transparent, DeepPurple.copy(alpha = 0.1f), OnyxBlack.copy(alpha = 0.9f))
+        )
+
         // 2. UI Flotante de Cristal
         Scaffold(
+            modifier = Modifier.background(backgroundGradient),
             backgroundColor = Color.Transparent,
             topBar = {
                 GlassPanel(
@@ -173,9 +183,9 @@ fun FilterChipGlass(text: String, isSelected: Boolean, onClick: () -> Unit) {
     
     Box(
         modifier = Modifier
+            .bouncingClickable(onClick = onClick)
             .clip(RoundedCornerShape(20.dp))
             .background(bgColor)
-            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
