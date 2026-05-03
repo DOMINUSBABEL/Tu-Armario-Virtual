@@ -26,7 +26,7 @@ fun SmartAvatarView(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         // Engine Router
         if (GameState.is3DMode) {
-            UnityViewPlaceholder() // 3D WebGL Engine
+            UnityView() // 3D WebGL Engine
         } else {
             Avatar2DView() // 2D Fallback Engine
         }
