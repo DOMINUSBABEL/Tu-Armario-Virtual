@@ -215,7 +215,15 @@ fun FeedItemGlass(post: PostData) {
                         // Simulando el Cross-User Tap llamando al Agente de Visión
                         val agentResponse = com.myapplication.common.api.AgentHubClient.identifyGarment(post.imageDataUrl ?: "")
                         println("Agent Response: $agentResponse")
-                        // Idealmente aquí mostramos el panel emergente
+                        
+                        // Commit 10: Integración UI de Similares
+                        // Simulamos extraer las tags de la respuesta y enviarlas al Store Agent
+                        val storeMatches = com.myapplication.common.api.AgentHubClient.matchStore(listOf("Chaqueta de Cuero", "Biker"))
+                        println("Store Matches: $storeMatches")
+                        
+                        // Commit 11: Módulo de Favoritos
+                        // Aquí se mostraría un BottomSheet con los resultados y un botón de "Guardar en Favoritos"
+                        // DatabaseRepository.insertFavorito(item.id)
                     }
                 },
                 modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.6f))
