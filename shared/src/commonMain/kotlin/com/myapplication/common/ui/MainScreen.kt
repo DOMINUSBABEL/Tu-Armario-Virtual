@@ -61,8 +61,8 @@ fun MainScreen(
     var isAnalyzing by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Orgánico (Smart Avatar Engine 3D/2D)
-        com.myapplication.common.ui.components.SmartAvatarView()
+        // 1. Fondo Neutro
+        Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE5E5E5)))
 
         // 2. Capa Flotante de UI (Transparente)
         Scaffold(

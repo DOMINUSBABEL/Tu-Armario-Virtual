@@ -40,8 +40,11 @@ fun WardrobeScreen(onNavigateBack: () -> Unit) {
     var selectedTextureBase64 by remember { mutableStateOf<String?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Orgánico (Smart Avatar Engine 3D/2D)
-        com.myapplication.common.ui.components.SmartAvatarView()
+        // 1. Vitrina Digital de Prendas
+        com.myapplication.common.ui.components.DigitalVitrine(
+            items = filteredItems,
+            preferences = listOf(selectedCategory)
+        )
 
         // 2. UI Flotante de Cristal
         Scaffold(

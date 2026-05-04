@@ -47,8 +47,8 @@ fun ShopScreen(onNavigateBack: () -> Unit) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Orgánico (Smart Avatar Engine 3D/2D)
-        com.myapplication.common.ui.components.SmartAvatarView()
+        // 1. Fondo Neutro para tienda
+        Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE5E5E5)))
 
         // 2. Capa Flotante de UI
         Scaffold(
