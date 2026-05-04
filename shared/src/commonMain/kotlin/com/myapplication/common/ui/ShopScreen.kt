@@ -220,9 +220,19 @@ fun ShopItemCardGlass(item: ShopItem, onOpenUrl: (String) -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
-                // Buy Button
+                // Buy Button via Purchase Agent
+                val coroutineScope = rememberCoroutineScope()
+                var purchaseStatus by remember { mutableStateOf<String?>(null) }
+                
                 Button(
-                    onClick = { onOpenUrl(item.affiliateLink) },
+                    onClick = { 
+                        coroutineScope.launch {
+                            purchaseStatus = "Comprando..."
+                            val response = com.myapplication.common.api.AgentHubClient.purchaseGarment(item.id)
+                            purchaseStatus = "Agente: Pedido en progreso"
+                            println(response)
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth().height(32.dp),
@@ -231,7 +241,7 @@ fun ShopItemCardGlass(item: ShopItem, onOpenUrl: (String) -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Filled.ShoppingCart, contentDescription = "Buy", modifier = Modifier.size(14.dp), tint = Color.Black)
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Get on ${item.store}", fontSize = 10.sp, color = Color.Black)
+                        Text(purchaseStatus ?: "Delegar compra al Agente", fontSize = 10.sp, color = Color.Black)
                     }
                 }
             }
