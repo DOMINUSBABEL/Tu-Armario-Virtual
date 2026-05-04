@@ -25,6 +25,21 @@ app.post('/api/hub/identify', async (req, res) => {
     }
 });
 
+// Endpoint: Cross-User Tap
+app.post('/api/hub/cross-user-tap', async (req, res) => {
+    try {
+        const { targetUserId, imageBase64 } = req.body;
+        console.log(`Cross-user tap detected on user ${targetUserId}`);
+        const response = await axios.post(`${VISION_AGENT_URL}/analyze`, { image: imageBase64 });
+        res.json({
+            message: "Prenda de otra usuaria identificada",
+            visionData: response.data
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error contacting Vision Agent for cross-user tap" });
+    }
+});
+
 // 2. Scraping y Tiendas
 app.post('/api/hub/match', async (req, res) => {
     try {
