@@ -210,7 +210,14 @@ fun FeedItemGlass(post: PostData) {
                 Icon(Icons.Filled.Share, contentDescription = "Share", tint = Color.White)
             }
             IconButton(
-                onClick = { /* Add to wardrobe or Buy from E-commerce */ },
+                onClick = { 
+                    coroutineScope.launch {
+                        // Simulando el Cross-User Tap llamando al Agente de Visión
+                        val agentResponse = com.myapplication.common.api.AgentHubClient.identifyGarment(post.imageDataUrl ?: "")
+                        println("Agent Response: $agentResponse")
+                        // Idealmente aquí mostramos el panel emergente
+                    }
+                },
                 modifier = Modifier.clip(CircleShape).background(Color.Black.copy(alpha = 0.6f))
             ) {
                 Icon(Icons.Filled.ShoppingCart, contentDescription = "Get Outfit", tint = Color.White)
