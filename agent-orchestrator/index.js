@@ -54,10 +54,35 @@ app.post('/api/hub/match', async (req, res) => {
 app.post('/api/hub/purchase', async (req, res) => {
     try {
         const response = await axios.post(`${PURCHASE_AGENT_URL}/checkout`, req.body);
+        
+        // Commit 15: Notificaciones de Estado
+        console.log("Notifying user: Tu pedido ha sido confirmado por el agente.");
+        
+        // Commit 18: Metrics & Reporting (Compras de afiliado)
+        console.log(`[METRICS] Compra delegada registrada para el item: ${req.body.itemId}`);
+        
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ error: "Error contacting Purchase Agent" });
     }
+});
+
+// Commit 16: Ad Engine en el Hub
+app.get('/api/hub/sponsored-recommendations', (req, res) => {
+    const { userStyle } = req.query;
+    
+    // Inyecta catálogo de marcas premium si coinciden con el estilo
+    let ads = [];
+    if (userStyle && userStyle.includes("Minimalist")) {
+        ads.push({ brand: "Vélez", item: "Chaqueta de Cuero Premium", isSponsored: true, ctr_value: 0.15 });
+    } else {
+        ads.push({ brand: "Arturo Calle", item: "Blazer Casual", isSponsored: true, ctr_value: 0.10 });
+    }
+    
+    // Commit 18: Métricas de Impresiones
+    console.log(`[METRICS] Impresión de Ad Engine registrada para estilo: ${userStyle}`);
+    
+    res.json({ ads });
 });
 
 app.listen(port, () => {
