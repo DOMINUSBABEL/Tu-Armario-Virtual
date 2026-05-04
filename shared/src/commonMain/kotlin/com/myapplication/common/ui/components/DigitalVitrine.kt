@@ -109,6 +109,19 @@ fun VitrineCard(item: WardrobeItem) {
                         modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp))
                     )
                 }
+                // Commit 17: Sponsored Cards UI
+                if (item.brand == "Vélez" || item.brand == "Arturo Calle") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFE0E5EC))
+                            .padding(vertical = 4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("SPONSORED", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    }
+                }
+                
                 Text(
                     text = item.name,
                     style = MaterialTheme.typography.subtitle1,
