@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.myapplication.common.gamification.GameState
 import com.myapplication.common.ui.components.AsyncImage
 import com.myapplication.common.ui.components.GlassPanel
-import com.myapplication.common.ui.components.UnityViewPlaceholder
+// import com.myapplication.common.ui.components.UnityViewPlaceholder
 import com.myapplication.common.ui.theme.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.gestures.detectTapGestures

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.myapplication.common.ui.components.GlassPanel
-import com.myapplication.common.ui.components.UnityViewPlaceholder
+// import com.myapplication.common.ui.components.UnityViewPlaceholder
 import com.myapplication.common.ui.components.AsyncImage
 import com.myapplication.common.unity.sendTextureTo3DEngine
 import androidx.compose.ui.window.Dialog

@@ -35,7 +35,7 @@ import com.myapplication.common.gamification.GameState
 import com.myapplication.common.image.ImagePicker
 import com.myapplication.common.ui.theme.*
 import com.myapplication.common.ui.components.GlassPanel
-import com.myapplication.common.ui.components.UnityViewPlaceholder
+// import com.myapplication.common.ui.components.UnityViewPlaceholder
 import com.myapplication.common.unity.exportAvatarSnapshot
 import com.myapplication.common.unity.sendTextureTo3DEngine
 import androidx.compose.foundation.interaction.MutableInteractionSource

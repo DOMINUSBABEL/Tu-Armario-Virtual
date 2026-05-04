@@ -19,7 +19,7 @@ import com.myapplication.common.data.MockData
 import com.myapplication.common.model.WardrobeItem
 import com.myapplication.common.image.BatchImagePicker
 import com.myapplication.common.ui.components.GlassPanel
-import com.myapplication.common.ui.components.UnityViewPlaceholder
+// import com.myapplication.common.ui.components.UnityViewPlaceholder
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
