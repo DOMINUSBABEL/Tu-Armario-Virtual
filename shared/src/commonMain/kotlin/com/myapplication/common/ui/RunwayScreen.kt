@@ -8,7 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.myapplication.common.api.OllamaClient
+import com.myapplication.common.api.NanoBananaClient
 import com.myapplication.common.db.DatabaseRepository
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -25,7 +25,7 @@ fun RunwayScreen(
     var isLoading by remember { mutableStateOf(false) }
     
     val coroutineScope = rememberCoroutineScope()
-    val ollamaClient = remember { OllamaClient() }
+    val nanoBananaClient = remember { NanoBananaClient() }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
@@ -72,7 +72,7 @@ fun RunwayScreen(
                     val images = selectedItems.map { it.imageBytes }
                     val itemDescriptions = selectedItems.map { "${it.color} ${it.category}" }
                     
-                    val response = ollamaClient.getOutfitSuggestion(images, activeTheme, itemDescriptions)
+                    val response = nanoBananaClient.getOutfitSuggestion(images, activeTheme, itemDescriptions)
                     aiSuggestion = response
                     isLoading = false
                 }
