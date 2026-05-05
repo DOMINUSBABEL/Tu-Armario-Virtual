@@ -29,10 +29,27 @@ fun WardrobeScreen(onNavigateBack: () -> Unit) {
     var selectedCategory by remember { mutableStateOf("All") }
     val categories = listOf("All", "Tops", "Bottoms", "Shoes", "Outerwear")
     
+    var dbItems by remember { mutableStateOf<List<WardrobeItem>>(emptyList()) }
+    
+    LaunchedEffect(Unit) {
+        val entities = com.myapplication.common.db.DatabaseRepository.getAllWardrobeItems()
+        dbItems = entities.map { entity ->
+            val base64Data = Base64.encode(entity.imageBytes)
+            val uri = "data:image/jpeg;base64,$base64Data"
+            WardrobeItem(
+                id = entity.id.toString(),
+                name = entity.category,
+                category = entity.category,
+                brand = "DY Collection",
+                imageUrl = uri
+            )
+        }
+    }
+    
     val filteredItems = if (selectedCategory == "All") {
-        MockData.defaultWardrobe
+        dbItems
     } else {
-        MockData.defaultWardrobe.filter { it.category == selectedCategory }
+        dbItems.filter { it.category == selectedCategory }
     }
 
     var showBatchPicker by remember { mutableStateOf(false) }

@@ -38,9 +38,9 @@ fun SocialFeedScreen(onNavigateBack: () -> Unit) {
     var mockPosts by remember {
         mutableStateOf(
             listOf(
-                PostData("1", "Cyberpunk Neon Nights", "user_123", listOf("Cyberpunk", "Neon", "Temu")),
-                PostData("2", "Minimalist Elegance", "fashion_guru", listOf("Minimalist", "Elegant", "Shein")),
-                PostData("3", "Y2K Throwback Outfit", "retro_lover", listOf("Y2K", "Vintage", "Thrifted"))
+                PostData("1", "Cyberpunk Neon Nights", "user_123", listOf("Cyberpunk", "Neon", "Temu"), "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"),
+                PostData("2", "Minimalist Elegance", "fashion_guru", listOf("Minimalist", "Elegant", "Shein"), "https://images.unsplash.com/photo-1434389673869-e4f0dc399032?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"),
+                PostData("3", "Y2K Throwback Outfit", "retro_lover", listOf("Y2K", "Vintage", "Thrifted"), "https://images.unsplash.com/photo-1550614000-4b95dd2632b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80")
             )
         )
     }
@@ -61,8 +61,8 @@ fun SocialFeedScreen(onNavigateBack: () -> Unit) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Neutro
-        Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE5E5E5)))
+        // 1. Fondo Onyx Black
+        Box(modifier = Modifier.fillMaxSize().background(Color(0xFF0F0F13)))
 
         // 2. Capa Flotante de UI
         Scaffold(

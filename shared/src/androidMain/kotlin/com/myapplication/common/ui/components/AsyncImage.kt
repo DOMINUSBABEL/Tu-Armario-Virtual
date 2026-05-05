@@ -50,18 +50,25 @@ actual fun AsyncImage(url: String, contentDescription: String, modifier: Modifie
     LaunchedEffect(url) {
         withContext(Dispatchers.IO) {
             try {
-                val input: InputStream = if (url.startsWith("file:///android_asset/")) {
-                    val assetPath = url.replace("file:///android_asset/", "")
-                    context.assets.open(assetPath)
+                if (url.startsWith("data:image")) {
+                    val base64Data = url.substringAfter("base64,")
+                    val decodedBytes = android.util.Base64.decode(base64Data, android.util.Base64.DEFAULT)
+                    val decoded = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                    bitmap = decoded?.asImageBitmap()
                 } else {
-                    val connection = URL(url).openConnection() as HttpURLConnection
-                    connection.doInput = true
-                    connection.connect()
-                    connection.inputStream
+                    val input: InputStream = if (url.startsWith("file:///android_asset/")) {
+                        val assetPath = url.replace("file:///android_asset/", "")
+                        context.assets.open(assetPath)
+                    } else {
+                        val connection = URL(url).openConnection() as HttpURLConnection
+                        connection.doInput = true
+                        connection.connect()
+                        connection.inputStream
+                    }
+                    val decoded = BitmapFactory.decodeStream(input)
+                    bitmap = decoded?.asImageBitmap()
+                    input.close()
                 }
-                val decoded = BitmapFactory.decodeStream(input)
-                bitmap = decoded?.asImageBitmap()
-                input.close()
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

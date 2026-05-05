@@ -61,8 +61,8 @@ fun MainScreen(
     var isAnalyzing by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Fondo Neutro
-        Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE5E5E5)))
+        // 1. Fondo Onyx Black
+        Box(modifier = Modifier.fillMaxSize().background(Color(0xFF0F0F13)))
 
         // 2. Capa Flotante de UI (Transparente)
         Scaffold(
