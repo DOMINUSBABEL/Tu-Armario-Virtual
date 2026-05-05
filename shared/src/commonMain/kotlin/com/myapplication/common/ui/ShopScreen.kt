@@ -31,6 +31,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.myapplication.common.ui.components.WebBrowserView
 import androidx.compose.material.icons.filled.Search
+import kotlinx.coroutines.launch
 
 @Composable
 fun ShopScreen(onNavigateBack: () -> Unit) {
