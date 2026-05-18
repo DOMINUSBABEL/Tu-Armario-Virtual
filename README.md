@@ -1,48 +1,45 @@
-# DressYourself (DY) - Documentación Técnica 👗✨
+# Generative AI and Serverless Architectures in Cross-Platform Virtual Try-On Systems: A Case Study on DressYourself
 
-Bienvenido a **DY (DressYourself)**, una aplicación vanguardista construida sobre **Kotlin Multiplatform (KMP)** que fusiona la moda digital con la inteligencia artificial y el renderizado 3D local. La arquitectura ha sido reestructurada en una serie de actualizaciones denominadas "AA Fashion App Update".
+**Abstract**
+The intersection of Generative Artificial Intelligence (GenAI), serverless cloud computing, and cross-platform mobile frameworks has created novel paradigms for e-commerce and digital fashion. This paper explores the architectural evolution of *DressYourself (DY)*, previously known as *Tu-Armario-Virtual*, transitioning from a monolithic, localized Kotlin Multiplatform (KMP) architecture with Ktor, towards a highly scalable, serverless ecosystem powered by Firebase Cloud Functions, NoSQL databases, and Generative AI pipelines. Furthermore, we examine the integration of Diffusion-based Virtual Try-On (VTO) technologies, mirroring the capabilities of Google Try-On, to synthesize realistic garment adaptation across diverse body typologies and poses using cloud-based AI orchestration. 
 
----
+## 1. Introduction
+The digital transformation of the fashion industry demands highly interactive, personalized, and visually accurate representations of garments. Traditional 3D rendering approaches require extensive manual modeling (.glb/.gltf) and complex mapping. Recent advancements in Diffusion Models (e.g., Stable Diffusion, Google's Try-On models) have demonstrated that image-based generation can synthesize highly realistic try-on results by preserving garment details (texture, wrinkles, logos) while warping them to fit varied human poses and body shapes. This paper details the structural overhaul of DY to support these capabilities while minimizing client-side computational load and optimizing API token usage.
 
-## 🏛️ Arquitectura del Sistema
+## 2. Architectural Metamorphosis: From Ktor to Serverless
+The initial iteration of DY relied on a traditional hexagonal architecture utilizing Ktor and PostgreSQL. While robust, this approach necessitated persistent compute resources, increasing operational overhead.
 
-El proyecto sigue una arquitectura modular en **KMP**, dividida entre la interfaz unificada (`shared/src/commonMain`) y las plataformas nativas (`androidMain`, `iosMain`, `desktopMain`).
+### 2.1 The Firebase Transition
+The migration to Firebase abstracts infrastructure management. 
+- **Data Layer:** Firestore (NoSQL) replaces PostgreSQL. The schema is denormalized to optimize read operations for user wardrobes and regional store catalogs.
+- **Compute Layer:** Firebase Cloud Functions (Node.js/TypeScript) replace Ktor endpoints. This enables an event-driven paradigm where functions react to Firestore triggers, Storage uploads, or Pub/Sub events (e.g., scheduled catalog scraping).
+- **Authentication:** Firebase Auth unifies Google, Apple, and Email authentication, generating secure JWTs validated implicitly by Firestore Security Rules.
 
-### 1. Motor 3D Híbrido (Avatar On-Device)
-Para permitir que los usuarios prueben su ropa real sobre avatares en 3D (estilo Roblox) sin la sobrecarga de migrar a Unity, DY utiliza un puente **KMP <-> Babylon.js**:
-- **`BabylonWebView.kt`**: Componente de Compose que carga un entorno HTML local (`babylon_scene.html`).
-- **Pipeline Gráfico**: Se carga un modelo base en formato `.glb`. Mediante un puente JavaScript (interoperabilidad de WebView), las texturas extraídas de la ropa real se envían como Base64 desde Kotlin y se aplican como *Albedo Textures* en las mallas correspondientes del modelo 3D (Torso, Piernas).
+### 2.2 Regional Scraping and Catalog Orchestration
+To function as a centralized portal, the system requires continuous ingestion of regional brand data. Cloud Functions utilize headless browsers (Puppeteer/Cheerio) via Pub/Sub CRON jobs. The extracted HTML/JSON is processed, normalizing sizes and currencies, and indexed in Firestore.
 
-### 2. Procesamiento de Visión On-Device (Texturizado UV Local)
-En lugar de depender de APIs de pago en la nube (Tripo3D/Meshy), utilizamos procesamiento local en el dispositivo del usuario:
-- **Segmentación (`GarmentSegmenter.kt`)**: Utiliza ML Kit (Android) y Vision Framework (iOS) para recortar el sujeto de la prenda, eliminando el fondo (Background Removal).
-- **Proyección a Textura**: Un algoritmo matemático deforma (warping) la imagen 2D obtenida para ajustarla a los mapas UV preestablecidos del modelo `.glb` del Avatar, creando la ilusión de que el avatar "lleva puesta" la prenda física.
+## 3. Generative AI Orchestration and Token Optimization
+Deploying LLMs and Vision APIs (like Gemini) in production requires strict cost control. DY implements an *Agent Orchestrator* pattern.
+1. **Vision Pipeline:** When a new catalog item is ingested, the system removes the background using Cloud Vision APIs.
+2. **Semantic Tagging:** A Gemini API agent analyzes the clean image, extracting a structured JSON containing attributes (color, pattern, style, seasonality).
+3. **Caching Strategy:** The resulting metadata and refined images are cached in Firestore and Firebase Storage. Subsequent requests for the same item bypass the AI layer entirely, reducing token consumption asymptotically towards zero over time.
 
-### 3. Red Social y Algoritmo de Interés (Interest Graph)
-El apartado social (Feed vertical) ha sido diseñado como un *Scroll Pager* nativo que emula a TikTok/Reels, pero centrado en la moda.
-- **Backend Híbrido (Ktor + PostgreSQL)**: Implementado bajo Arquitectura Hexagonal (Ports & Adapters). Los casos de uso de la red social no conocen la base de datos; esto permite que, si el aplicativo escala, el repositorio pueda intercambiarse por Firebase o Supabase sin afectar el código principal.
-- **Algoritmo de Interés (`InterestGraph.kt`)**: La visibilidad de las publicaciones ("Outfits") se clasifica en base a un sistema paramétrico de pesos.
-  - **Fórmula de Ranking**: `Score = (WatchTime * 0.4) + (Likes * 0.3) + (Saves * 0.2) + (TagAffinity * 0.1)`
-  - Esto garantiza que el feed recompense el contenido de calidad que retiene al usuario, emparejándolo con sus etiquetas de estilo preferidas (Afinidad Y2K, Minimalista, Cyberpunk).
+## 4. Virtual Try-On (VTO): Integrating Diffusion Models
+Inspired by Google Try-On, DY incorporates a 2D image-based VTO pipeline alongside its existing Babylon.js 3D engine. Google's methodology utilizes an image-based diffusion model trained on millions of image pairs to warp clothing onto users.
 
-### 4. UI/UX: Identidad "Comfortable Disruption"
-La interfaz fue refactorizada a un tema Oscuro "Onyx Black" (`#0F0F13`) con paneles estilo *Glassmorphism* (cristal opaco) y acentos Neón y Plateados.
-- Se ha integrado **Spring Physics** para las interacciones y animaciones de entrada, eliminando por completo los *spinners* de carga para reemplazarlos por *Shimmer Effects* corporativos.
-- El isotipo geométrico unifica los conceptos del mundo material (un maniquí/gancho) y la era digital (un vértice de datos 3D).
+### 4.1 VTO Pipeline Architecture
+- **Input Processing:** The client app captures the user's photo. Local ML Kit (Android) or Vision Framework (iOS) performs initial pose estimation and face obfuscation for privacy.
+- **Cloud Execution:** The obfuscated image and the selected catalog garment image are sent to a dedicated Cloud Function.
+- **Diffusion Inference:** The function interfaces with a VTO Diffusion API. The model conditions the generation on the user's pose (via DensePose or similar embeddings) and the garment's visual features, utilizing cross-attention mechanisms to preserve fabric textures.
+- **Delivery and UX:** The synthesized image is returned to the client and cached using Kamel/Coil in the Compose UI. An interactive slider allows the user to compare the original and synthesized images.
 
----
+### 4.2 Fallback Mechanism: Spring Physics and Babylon.js
+If the diffusion API is unavailable or for rapid offline preview, DY falls back to its hybrid 3D engine. Using Kotlin and Javascript interoperability, 2D images are projected onto a base 3D avatar using dynamic UV mapping governed by Spring Physics to simulate fabric draping.
 
-## 🚀 Despliegue y Orquestación
+## 5. Mobile Frontend: Compose Multiplatform
+The user interface is entirely constructed using Compose Multiplatform. This declarative UI framework allows sharing >85% of the codebase across Android, iOS, and Desktop. 
+Features like the TikTok-style vertical social feed and interactive item cards are implemented using generic Composable functions, while platform-specific hardware interactions (like camera access for VTO) are abstracted through expect/actual paradigms.
 
-### Frontend KMP (App Móvil)
-1. Abrir en Android Studio (con el plugin Kotlin Multiplatform).
-2. Asegurar que `JAVA_HOME` apunta al JDK empaquetado (jbr).
-3. Compilar para Android: `./gradlew assembleDebug`
+## 6. Conclusion and Future Work
+The evolution of DY represents a paradigm shift from localized monoliths to AI-driven, serverless architectures. By orchestrating Generative AI for data ingestion and Diffusion models for VTO, the platform offers a highly scalable, economically viable, and user-centric fashion ecosystem. Future iterations will focus on real-time video VTO and deeper integration with affiliate marketing APIs.
 
-### Backend Ktor (Red Social)
-El código de Ktor (cuando se externalice del prototipo actual) debe orquestarse en contenedores Docker:
-1. Compilar imagen de Ktor: `./gradlew installDist` y luego construir el `Dockerfile`.
-2. Orquestar junto a PostgreSQL usando `docker-compose up -d`.
-
-## 👩‍💻 Contribuidores y Agentes
-Esta versión ha sido orquestada en colaboración con Agentes de Inteligencia Artificial (Generalist, Codebase Investigator) simulando un entorno de Coworking para acelerar el desarrollo AA.
