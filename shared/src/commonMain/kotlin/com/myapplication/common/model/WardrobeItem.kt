@@ -7,3 +7,4 @@ data class WardrobeItem(
     val brand: String,
     val imageUrl: String // Placeholder URL
 )
+

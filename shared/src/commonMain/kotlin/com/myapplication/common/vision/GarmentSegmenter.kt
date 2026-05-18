@@ -28,3 +28,4 @@ class GarmentSegmenterStub : GarmentSegmenter {
         return imageBytes
     }
 }
+

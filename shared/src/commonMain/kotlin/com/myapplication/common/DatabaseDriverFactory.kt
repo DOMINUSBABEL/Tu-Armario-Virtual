@@ -10,3 +10,4 @@ fun createDatabase(driverFactory: DatabaseDriverFactory): com.myapplication.db.A
     val driver = driverFactory.createDriver()
     return com.myapplication.db.ArmarioDatabase(driver)
 }
+

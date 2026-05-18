@@ -3,48 +3,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.myapplication.common.navigation.AppScreen
-import com.myapplication.common.ui.SplashScreen
-import com.myapplication.common.ui.LoginScreen
-import com.myapplication.common.ui.TutorialScreen
-import com.myapplication.common.ui.MainScreen
-import com.myapplication.common.ui.LeaderboardScreen
-import com.myapplication.common.ui.WardrobeScreen
-import com.myapplication.common.ui.ShopScreen
-import com.myapplication.common.ui.RunwayScreen
-import com.myapplication.common.ui.RunwayShowcaseScreen
-import com.myapplication.common.social.SocialFeedScreen
-import com.myapplication.common.ui.theme.AppTheme
+import com.dy.ui.DressYourselfTheme
+import com.dy.ui.DiscoverScreen
+import com.dy.ui.WardrobeScreen
+import com.dy.ui.IsaAssistantScreen
+
+// Simulating navigation for the Soft-Tech Redesign
+sealed class SoftTechScreen(val route: String) {
+    object Discover : SoftTechScreen("Discover")
+    object Wardrobe : SoftTechScreen("Wardrobe")
+    object IsaAssistant : SoftTechScreen("IsaAssistant")
+}
 
 @Composable
 fun App() {
-    AppTheme {
-        var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Splash) }
+    DressYourselfTheme {
+        var currentRoute by remember { mutableStateOf<String>(SoftTechScreen.Discover.route) }
 
-        when (val screen = currentScreen) {
-            is AppScreen.Splash -> SplashScreen(onNavigateNext = { currentScreen = AppScreen.Login })
-            is AppScreen.Login -> LoginScreen(onNavigateToTutorial = { currentScreen = AppScreen.Tutorial })
-            is AppScreen.Tutorial -> TutorialScreen(onNavigateToMain = { currentScreen = AppScreen.Main })
-            is AppScreen.Main -> MainScreen(
-                onNavigateToLeaderboard = { currentScreen = AppScreen.Leaderboard },
-                onNavigateToWardrobe = { currentScreen = AppScreen.Wardrobe },
-                onNavigateToRunway = { currentScreen = AppScreen.Runway },
-                onNavigateToShop = { currentScreen = AppScreen.Shop },
-                onNavigateToSocialFeed = { currentScreen = AppScreen.SocialFeed }
-            )
-            is AppScreen.Leaderboard -> LeaderboardScreen(onNavigateBack = { currentScreen = AppScreen.Main })
-            is AppScreen.Wardrobe -> WardrobeScreen(onNavigateBack = { currentScreen = AppScreen.Main })
-            is AppScreen.Shop -> ShopScreen(onNavigateBack = { currentScreen = AppScreen.Main })
-            is AppScreen.Runway -> RunwayScreen(
-                onNavigateBack = { currentScreen = AppScreen.Main },
-                onNavigateToShowcase = { desc, theme -> currentScreen = AppScreen.RunwayShowcase(desc, theme) }
-            )
-            is AppScreen.RunwayShowcase -> RunwayShowcaseScreen(
-                outfitDescription = screen.outfitDescription,
-                theme = screen.theme,
-                onNavigateBack = { currentScreen = AppScreen.Main }
-            )
-            is AppScreen.SocialFeed -> SocialFeedScreen(onNavigateBack = { currentScreen = AppScreen.Main })
+        val onNavigate: (String) -> Unit = { route ->
+            currentRoute = route
+        }
+
+        when (currentRoute) {
+            SoftTechScreen.Discover.route -> DiscoverScreen(currentRoute, onNavigate)
+            SoftTechScreen.Wardrobe.route -> WardrobeScreen(currentRoute, onNavigate)
+            SoftTechScreen.IsaAssistant.route -> IsaAssistantScreen(currentRoute, onNavigate)
         }
     }
 }
