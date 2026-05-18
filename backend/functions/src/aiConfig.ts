@@ -1,0 +1,1 @@
+﻿// Gemini SDK config
