@@ -11,7 +11,7 @@ object AgentHubClient {
         return try {
             // Standalone app mode: call NanoBanana/Gemini directly
             val bytes = Base64.decode(imageBase64.replace("data:image/png;base64,", "").replace("data:image/jpeg;base64,", ""))
-            nanoClient.getOutfitSuggestion(listOf(bytes), "Identificación de prenda", emptyList())
+            nanoClient.getOutfitSuggestion(listOf(bytes), "Identificación de prenda", emptyList()).description
         } catch (e: Exception) {
             "Error delegating to NanoBanana API: ${e.message}"
         }

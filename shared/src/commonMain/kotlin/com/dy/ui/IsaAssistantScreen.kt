@@ -12,6 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.myapplication.common.api.NanoBananaClient
+import kotlinx.coroutines.launch
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,8 +25,11 @@ fun IsaAssistantScreen(
 ) {
     var textInput by remember { mutableStateOf("") }
     val messages = remember { mutableStateListOf(
-        "¡Hola! Soy Isa, impulsada por Gemini 2.5 Flash. ¿En qué te puedo ayudar hoy con tu estilo?"
+        Pair("¡Hola! Soy Isa. Deshazte de esa ropa aburrida y hablemos de verdadero estilo. ¿En qué necesitas iluminación hoy?", null as String?)
     ) }
+    var isLoading by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val nanoClient = remember { NanoBananaClient() }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -42,10 +49,26 @@ fun IsaAssistantScreen(
                 verticalArrangement = Arrangement.spacedBy(IsaDimens.BaseSpacing * 2)
             ) {
                 items(messages.size) { index ->
-                    if (index == 0 || index % 2 == 0) {
-                        IsaAvatar(message = messages[index])
-                    } else {
-                        UserMessage(message = messages[index])
+                    val (text, imageUrl) = messages[index]
+                    if (index == 0 || index % 2 == 0) { // Isa
+                        Column {
+                            IsaAvatar(message = text)
+                            if (imageUrl != null) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                KamelImage(
+                                    resource = asyncPainterResource(data = imageUrl),
+                                    contentDescription = "Isa's Recommendation",
+                                    modifier = Modifier.fillMaxWidth().height(250.dp).clip(RoundedCornerShape(12.dp))
+                                )
+                            }
+                        }
+                    } else { // User
+                        UserMessage(message = text)
+                    }
+                }
+                if (isLoading) {
+                    item {
+                        Text("Isa está juzgando tu armario...", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
@@ -74,10 +97,16 @@ fun IsaAssistantScreen(
                     Spacer(modifier = Modifier.width(IsaDimens.BaseSpacing))
                     IconButton(
                         onClick = {
-                            if (textInput.isNotBlank()) {
-                                messages.add(textInput)
-                                messages.add("Buscando en tu armario y en las tendencias locales para responder a: '$textInput'...")
+                            if (textInput.isNotBlank() && !isLoading) {
+                                val userText = textInput
+                                messages.add(Pair(userText, null))
                                 textInput = ""
+                                isLoading = true
+                                coroutineScope.launch {
+                                    val result = nanoClient.chatWithIsa(userText)
+                                    messages.add(Pair(result.description, result.imageUrl))
+                                    isLoading = false
+                                }
                             }
                         },
                         modifier = Modifier
